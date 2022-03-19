@@ -8,7 +8,6 @@ else
     SECRET_KEY_BASE="$( openssl rand -hex 32 | tr -d '\n' )"
     cp "freedive.toml.sample" "freedive.toml"
     sed -i '' -e "s/CHANGE-ME/${SECRET_KEY_BASE}/g" "freedive.toml"
-    sed -i '' -e "s/DATA-PATH-PREFIX/~\/src\/freedive/g" "freedive.toml"
 fi
 
 if [ -f tls.key ] ; then
