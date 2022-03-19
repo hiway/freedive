@@ -43,3 +43,8 @@ freedive.toml
 
 *.dump
 pkg/
+favicon-*.ico
+robots-*.txt
+robots-*.txt.gz
+robots.txt.gz
+phoenix-*.png
