@@ -36,3 +36,10 @@ npm-debug.log
 *.db
 *.db-*
 
+tls.crt
+tls.key
+request.txt
+freedive.toml
+
+*.dump
+pkg/

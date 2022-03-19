@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "APP_NAME was removed."

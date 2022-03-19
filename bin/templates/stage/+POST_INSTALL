@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ln -sf "/usr/local/APP_NAME/bin/APP_NAME" "/usr/local/bin/APP_NAME"
+
+chown root:wheel "/usr/local/APP_NAME"
+chmod 700 "/usr/local/APP_NAME"
+
+# sysrc immortaldir_path="/usr/local/etc/immortal" > /dev/null
+# service immortaldir enable > /dev/null
+# service immortaldir start 2> /dev/null || echo
+
+echo "APP_NAME was installed."

@@ -1,0 +1,14 @@
+name: "APP_NAME"
+version: "APP_VERSION"
+origin: "sysutils/APP_NAME"
+comment: "Automatic Private Cloud"
+www: https://github.com/freedive/APP_NAME
+maintainer: harshad@sharma.io
+prefix: /usr/local
+desc: <<EOD
+    Managed FreeBSD jails from the comfort of a browser.
+EOD
+deps: {
+    # immortal: {origin: sysutils/immortal, version: 0.24.3},
+    sqlite3: {origin: databases/sqlite3, version: 3.35.5_3},
+}

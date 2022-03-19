@@ -10,7 +10,16 @@ defmodule Freedive.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      releases: [
+        freedive: [
+          include_erts: true,
+          include_executables_for: [:unix],
+          applications: [
+            runtime_tools: :permanent
+          ]
+        ]
+      ],
     ]
   end
 
@@ -20,7 +29,7 @@ defmodule Freedive.MixProject do
   def application do
     [
       mod: {Freedive.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :crypto]
     ]
   end
 
@@ -48,7 +57,9 @@ defmodule Freedive.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:toml, "~> 0.6.2"},
+      {:net_address, "~> 0.3.0"},
     ]
   end
 
