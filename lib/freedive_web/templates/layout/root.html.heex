@@ -13,7 +13,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
-          Freedive
+          <strong>Freedive</strong>
         </a>
 
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-main">
@@ -101,12 +101,7 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                <strong>Log in</strong>
-              </a>
-              <%# <a class="button is-light">
-                Log out
-              </a> %>
+              <%= render "_user_menu.html", assigns %>
             </div>
           </div>
         </div>
