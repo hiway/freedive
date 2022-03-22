@@ -1,10 +1,19 @@
-<section class="hero is-medium is-link">
-  <div class="hero-body">
-    <p class="title">
-      Freedive
-    </p>
-    <p class="subtitle">
-      Dive into FreeBSD
-    </p>
-  </div>
-</section>
+<%= if @current_user do %>
+Ohai!
+<% else %>
+  <section class="hero is-fullheight">
+    <div class="hero-body">
+      <div class="container has-text-centered is-fullwidth">
+        <p class="title">
+          Freedive
+        </p>
+        <p class="subtitle">
+          Dive into FreeBSD
+        </p>
+        <p>
+          <%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "button is-primary" %>
+        </p>
+      </div>
+    </div>
+  </section>
+<% end %>
