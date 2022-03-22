@@ -1,0 +1,99 @@
+<%= if @current_user do %>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <strong>Freedive</strong>
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-main">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbar-main" class="navbar-menu">
+        <div class="navbar-start">
+
+          <%# <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              Host
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item">
+                Boot Environments
+              </a>
+              <a class="navbar-item">
+                Manage Packages
+              </a>
+              <a class="navbar-item">
+                System Updates
+              </a>
+              <hr class="navbar-divider">
+              <a class="navbar-item">
+                Reboot
+              </a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              Compute
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item">
+                Jails
+              </a>
+              <a class="navbar-item">
+                Virtual Machines
+              </a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              Storage
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item">
+                ZFS Datasets
+              </a>
+              <a class="navbar-item">
+                Sync
+              </a>
+              <a class="navbar-item">
+                Backups
+              </a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              Network
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item">
+                Network Interfaces
+              </a>
+              <a class="navbar-item">
+                Virtual Private Networks
+              </a>
+            </div>
+          </div> %>
+
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <%= render "_user_menu.html", assigns %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+<% end %>
