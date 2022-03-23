@@ -15,7 +15,7 @@ freedive_enable=${freedive_enable:-"NO"}
 name=freedive
 rcvar=freedive_enable
 
-extra_commands="run iex init config import export reset" 
+extra_commands="run iex init config import export reset migrate rollback create_user" 
 
 procname=/usr/local/bin/freedive
 start_cmd="/usr/local/bin/freedive daemon"
@@ -29,6 +29,9 @@ config_cmd="/usr/local/freedive/scripts/config.sh"
 import_cmd="/usr/local/freedive/scripts/import.sh"
 export_cmd="/usr/local/freedive/scripts/export.sh"
 reset_cmd="/usr/local/freedive/scripts/reset.sh"
+migrate_cmd='/usr/local/bin/freedive eval "Freedive.Release.migrate"'
+rollback_cmd='/usr/local/bin/freedive eval "Freedive.Release.rollback"'
+create_user_cmd='/usr/local/bin/freedive eval "Freedive.Release.create_user"'
 
 load_rc_config ${name}
 run_rc_command "$1"
