@@ -41,7 +41,7 @@ defmodule FreediveWeb.Router do
     scope "/" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: FreediveWeb.Telemetry
+      live_dashboard "/telemetry", metrics: FreediveWeb.Telemetry
     end
   end
 
@@ -78,6 +78,8 @@ defmodule FreediveWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    live "/dashboard", DashboardLive
   end
 
   scope "/", FreediveWeb do

@@ -1,9 +1,7 @@
 <%= if @current_user do %>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          <strong>Freedive</strong>
-        </a>
+        <%= live_patch "Freedive", to: Routes.live_path(@conn, FreediveWeb.DashboardLive), class: "navbar-item" %>
 
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-main">
           <span aria-hidden="true"></span>
