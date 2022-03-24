@@ -80,4 +80,15 @@ if config_env() == :prod do
       ],
       secret_key_base: secret_key_base
   end
+
+  %{
+    "pushover" => %{
+      "user_key" => user_key,
+      "api_token" => api_token,
+    }
+  } = conf
+
+  config :pushover,
+    user: user_key,
+    token: api_token
 end

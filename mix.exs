@@ -61,6 +61,9 @@ defmodule Freedive.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:toml, "~> 0.6.2"},
       {:net_address, "~> 0.3.0"},
+      {:pushover, "~> 0.3.3"},
+      {:mime, "~> 2.0.2", override: true},
+      {:telemetry, "~> 1.0.0", override: true},
     ]
   end
 

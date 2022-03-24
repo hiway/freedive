@@ -21,3 +21,7 @@ certfile = "tls.crt"
 
 [phoenix]
 secret_key_base = "CHANGE-ME"
+
+[pushover]
+user_key = ""
+api_token = ""

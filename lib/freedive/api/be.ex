@@ -1,4 +1,6 @@
 defmodule Freedive.Api.BE do
+  alias Freedive.Api.Notification
+
   def list() do
     {stdout, _exitcode} = System.cmd("bectl", ["list", "-H"])
     stdout
@@ -80,6 +82,7 @@ defmodule Freedive.Api.BE do
 
   def reboot_with_be(name) do
     {stdout, _} = System.cmd("bectl", ["activate", "-t", name])
+    Notification.send("Rebooting", name, 1)
     {_, _} = System.cmd("shutdown", ["-r", "now"])
     stdout |> String.trim()
   end
