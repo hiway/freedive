@@ -19,9 +19,7 @@
             </a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item">
-                Boot Environments
-              </a>
+              <%= live_patch "Boot Environments", to: Routes.live_path(@conn, FreediveWeb.BELive), class: "navbar-item" %>
               <a class="navbar-item">
                 System Updates
               </a>
