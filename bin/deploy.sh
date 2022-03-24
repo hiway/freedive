@@ -6,7 +6,7 @@ LATEST_PKG_PATH="pkg/${LATEST_PKG_FILE:?}"
 REMOTE_SERVER="wok"
 REMOTE_PKG_PATH="deploy/freedive/${LATEST_PKG_FILE:?}"
 
-echo "Uploading ${LATEST_PKG_FILE}" ==> "${REMOTE_SERVER}"
+echo "Uploading ${LATEST_PKG_FILE} ==> ${REMOTE_SERVER}"
 scp "${LATEST_PKG_PATH:?}" "${REMOTE_SERVER:?}:${REMOTE_PKG_PATH:?}"
 
 echo "Stopping service if already runing"
