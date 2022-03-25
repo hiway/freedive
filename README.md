@@ -1,6 +1,6 @@
 # Freedive
 
-Web-UI to configure and manage FreeBSD workstations and servers on amd64 as well as arm64.
+Web-UI to configure and manage FreeBSD workstations and servers on amd64 baremetal machines and VMs with root on ZFS.
 Use Freedive to manage FreeBSD hosts from the comfort of your browser.
 No scripts or YAML configuration involved.
 
