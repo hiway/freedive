@@ -3,7 +3,7 @@
 LATEST_PKG_FILE="$( cd pkg && ls -tr *.pkg | tail -n 1 )"
 LATEST_PKG_PATH="pkg/${LATEST_PKG_FILE:?}"
 
-REMOTE_SERVER="wok"
+REMOTE_SERVER="${1:?deploy.sh REMOTE_SERVER}"
 REMOTE_PKG_PATH="deploy/freedive/${LATEST_PKG_FILE:?}"
 
 echo "Uploading ${LATEST_PKG_FILE} ==> ${REMOTE_SERVER}"
