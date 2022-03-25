@@ -1,5 +1,13 @@
 # Freedive
 
+Web-UI to configure and manage FreeBSD workstations and servers on amd64 as well as arm64.
+Use Freedive to manage FreeBSD hosts from the comfort of your browser.
+No scripts or YAML configuration involved.
+
+As of v0.1.0, Freedive supports:
+
+- Boot Environments
+
 ## Try
 
 Download latest package from https://github.com/hiway/freedive/releases/
