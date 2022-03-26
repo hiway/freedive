@@ -1,28 +1,36 @@
-<div class="box has-text-centered">
-  <p class="field"><%= @host_name %></p>
-  <p class="field"><%= @uptime %></p>
-  <p class="field">Current BE: <%= @be_current[:name]%></p>
-  <p class="field">Default BE: <%= @be_default[:name]%></p>
-</div>
-<div class="has-text-centered">
-  <div class="section">
-    <%= if @be_temporary do %>
-      <p class="field">Next BE: <%= @be_temporary[:name]%></p>
-    <% else %>
-      <p class="field">Next BE: <%= @be_default[:name]%></p>
-    <% end %>
-    <%= if not @rebooting do %>
-      <%= if not @confirm do %>
-        <button class="button is-warning" phx-click="reboot">
-          Reboot
-        </button>
-      <% else %>
-        <button class="button is-danger" phx-click="confirm_reboot">
-          Confirm Reboot
-        </button>
-      <% end %>
-    <% else %>
-      <h4 class="title is-4">Rebooting...</h4>
-    <% end %>
+<%= if not @rebooting do %>
+  <div class="box has-text-centered">
+    <h1 class="title"><%= @host_name %></h1>
+    <h2 class="subtitle"><%= @uptime %></h2>
+    <p class="field">Current BE: <%= @be_current[:name]%></p>
+    <p class="field">Default BE: <%= @be_default[:name]%></p>
   </div>
-</div>
+  <div class="has-text-centered">
+    <div class="section">
+      <%= if @be_temporary do %>
+        <p class="field">Next BE: <%= @be_temporary[:name]%></p>
+      <% else %>
+        <p class="field">Next BE: <%= @be_default[:name]%></p>
+      <% end %>
+        <%= if not @confirm do %>
+          <button class="button is-warning" phx-click="reboot">
+            Reboot
+          </button>
+        <% else %>
+          <button class="button is-danger" phx-click="confirm_reboot">
+            Confirm Reboot
+          </button>
+        <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="box has-text-centered">
+    <h3 class="title"><%= @host_name %></h3>
+    <%= if @be_temporary do %>
+      <h3 class="subtitle">rebooting into <span class="tag is-warning"><%= @be_temporary[:name]%></span></h3>
+    <% else %>
+      <h3 class="subtitle">rebooting into <span class="tag is-info"><%= @be_default[:name]%></span></h3>
+    <% end %>
+  
+  </div>
+<% end %>

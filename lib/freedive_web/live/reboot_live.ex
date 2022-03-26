@@ -5,6 +5,7 @@ defmodule FreediveWeb.RebootLive do
   alias Freedive.Api.BE
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: Process.send_after(self(), :uptime, 10000)
     {:ok, socket |> assign(%{
       confirm: :false,
       rebooting: false,
@@ -14,6 +15,11 @@ defmodule FreediveWeb.RebootLive do
       host_name: host_name(),
       uptime: uptime(),
       })}
+  end
+
+  def handle_info(:uptime, socket) do
+    if connected?(socket), do: Process.send_after(self(), :uptime, 10000)
+    {:noreply, socket |> assign(%{uptime: uptime()})}
   end
 
   def handle_info(:remove_confirm_prompt, socket) do
