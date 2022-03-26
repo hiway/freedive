@@ -29,6 +29,7 @@ Roadmap:
 
 - Time synchronisation (`openntpd`)
 - Harden SSH, manage users, generate ssh config snippets (`sshd`)
+- Automatic full mesh VPN  (`tailscale`)
 - System update, auto-update (`freebsd-update`)
 - Remote backups, restore/rollback (`restic`)
 - Forward syslog to UI, filters and notificatios (`syslog-ng`)
@@ -41,6 +42,7 @@ Roadmap:
 - Battery status
 - devd events
 - Run shell scripts on any Freedive event/status
+- Automatic hub-spoke VPN (`wireguard`)
 - FreeBSD Jails (`jail`)
   - Full / clone jails
   - Packages: search, install, remove, lock, update, auto-update (`pkg`)
