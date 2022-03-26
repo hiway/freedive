@@ -80,6 +80,7 @@ defmodule FreediveWeb.Router do
 
     live "/dashboard", DashboardLive
     live "/be", BELive
+    live "/reboot", RebootLive
   end
 
   scope "/", FreediveWeb do

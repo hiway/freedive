@@ -20,6 +20,7 @@
 
             <div class="navbar-dropdown">
               <%= live_patch "Boot Environments", to: Routes.live_path(@conn, FreediveWeb.BELive), class: "navbar-item" %>
+              <%= live_patch "Reboot", to: Routes.live_path(@conn, FreediveWeb.RebootLive), class: "navbar-item" %>
               <%# <a class="navbar-item">
                 System Updates
               </a>

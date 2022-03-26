@@ -1,5 +1,6 @@
 defmodule Freedive.Api.BE do
   alias Freedive.Api.Notification
+  alias Freedive.Api.Reboot
 
   def list() do
     {stdout, _exitcode} = System.cmd("bectl", ["list", "-H"])
@@ -26,6 +27,24 @@ defmodule Freedive.Api.BE do
     be_list
       |> Enum.filter(
         fn be -> String.contains?(be[:flags], "N")
+      end)
+      |> List.first()
+  end
+
+  def be_temporary() do
+    be_list = list()
+    be_list
+      |> Enum.filter(
+        fn be -> String.contains?(be[:flags], "T")
+      end)
+      |> List.first()
+  end
+
+  def be_default() do
+    be_list = list()
+    be_list
+      |> Enum.filter(
+        fn be -> String.contains?(be[:flags], "R")
       end)
       |> List.first()
   end
