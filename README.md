@@ -1,12 +1,59 @@
 # Freedive
 
-Web-UI to configure and manage FreeBSD workstations and servers on amd64 baremetal machines and VMs with root on ZFS.
-Use Freedive to manage FreeBSD hosts from the comfort of your browser.
-No scripts or YAML configuration involved.
+Web-UI to configure and manage FreeBSD hosts.
+
+- Mobile-first UI
+- Manage workstations 
+  - Laptops
+  - Desktops
+- Manage servers
+  - Baremetal / hardware
+  - Virtual Machines / VPS
+
+Freedive is a wrapper around utilities included in the base system and third-party packages.
+It sets up FreeBSD as an appliance and may modify/replace configuration.
+Prefer to install Freedive on a new FreeBSD system that has not been configured manually.
+
+Freedive expects:
+
+- ZFS root pool
+- FreeBSD 13.0-RELEASE 
+- A new install to configure as an appliance
 
 As of v0.1.0, Freedive supports:
 
-- Boot Environments
+- Boot Environments (`bectl`)
+- Notifications ( https://pushover.net )
+
+Roadmap:
+
+- Time synchronisation (`openntpd`)
+- Harden SSH, manage users, generate ssh config snippets (`sshd`)
+- System update, auto-update (`freebsd-update`)
+- Remote backups, restore/rollback (`restic`)
+- Forward syslog to UI, filters and notificatios (`syslog-ng`)
+- Firewall (`pf`)
+- ZFS datasets (`zfs`)
+- ZFS zpools (`zpool`)
+- Network interfaces (`ifconfig`)
+- Screen brightness on Thinkpad X280 (and more) laptops (`intel_backlight`)
+- SMART status
+- Battery status
+- devd events
+- Run shell scripts on any Freedive event/status
+- FreeBSD Jails (`jail`)
+  - Full / clone jails
+  - Packages: search, install, remove, lock, update, auto-update (`pkg`)
+  - VNET, DHCP, IPv4, IPv6, DNS, NAT for jail networking
+  - Mount paths from host into jails
+  - Forward syslog to host
+  - Backup/restore via restic
+  - Automatic system updates
+  - Pin, edit configuration/text files
+  - Web terminal
+  - SSH bastion on host
+
+There is no ETA on any future feature.
 
 ## Try
 
