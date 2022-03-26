@@ -99,13 +99,6 @@ defmodule Freedive.Api.BE do
     stdout |> String.trim()
   end
 
-  def reboot_with_be(name) do
-    {stdout, _} = System.cmd("bectl", ["activate", "-t", name])
-    Notification.send("Rebooting", name, 1)
-    {_, _} = System.cmd("shutdown", ["-r", "now"])
-    stdout |> String.trim()
-  end
-
   def create_be(name) do
     {stdout, _} = System.cmd("bectl", ["create", "-r", name])
     stdout |> String.trim()

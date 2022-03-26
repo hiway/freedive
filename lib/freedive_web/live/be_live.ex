@@ -67,11 +67,6 @@ defmodule FreediveWeb.BELive do
     end
   end
 
-  def handle_event("be_reboot", %{"name" => name}, socket) do
-    IO.puts(Freedive.Api.BE.reboot_with_be(name))
-    {:noreply, assign(socket, results: Freedive.Api.BE.list())}
-  end
-
   def handle_event("be_create", %{"name" => name}, socket) do
     IO.puts(Freedive.Api.BE.create_be(name))
     {:noreply, assign(socket, results: Freedive.Api.BE.list())}
