@@ -8,7 +8,7 @@ Web-UI to configure and manage FreeBSD hosts.
   - Desktops
 - Manage servers
   - Baremetal / hardware
-  - Virtual Machines / VPS
+  - Virtual Machines / VPS / cloud instances
 
 Freedive is a wrapper around utilities included in the base system and third-party packages.
 It sets up FreeBSD as an appliance and may modify/replace configuration.
