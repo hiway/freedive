@@ -82,7 +82,13 @@ defmodule Freedive.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "tailwind.install_freebsd", "ecto.setup", "assets.setup", "assets.build"],
+      setup: [
+        "deps.get",
+        "tailwind.install_freebsd",
+        "ecto.setup",
+        "assets.setup",
+        "assets.build"
+      ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
@@ -93,13 +99,14 @@ defmodule Freedive.MixProject do
         "esbuild freedive --minify",
         "phx.digest"
       ],
-      "package.freebsd": ["compile", "assets.deploy", "release --overwrite", "freebsd.pkg"]
+      "package.freebsd": ["compile", "assets.deploy", "release --overwrite", "freebsd.pkg"],
+      prod: ["phx.server"]
     ]
   end
 
   def cli do
     [
-      preferred_envs: ["package.freebsd": :prod],
+      preferred_envs: ["package.freebsd": :prod, prod: :prod]
     ]
   end
 end

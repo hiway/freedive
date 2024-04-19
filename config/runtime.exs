@@ -1,6 +1,42 @@
 import Config
 import IP
 
+defmodule BindToIp do
+  def get_ip(bind) do
+    case bind do
+      "tailscale4" -> get_tailscale_ip4() |> verify_tailscale_is_up()
+      "tailscale6" -> get_tailscale_ip6() |> verify_tailscale_is_up()
+      "local4" -> IP.from_string!("127.0.0.1")
+      "local6" -> IP.from_string!("0.0.0.0.0.0.0.0")
+      "all4" -> IP.from_string!("0.0.0.0")
+      "all6" -> IP.from_string!("::")
+      other -> IP.from_string!(other)
+    end
+  end
+
+  defp get_tailscale_ip4() do
+    exec_tailscale(["ip", "-4"])
+  end
+
+  defp get_tailscale_ip6() do
+    exec_tailscale(["ip", "-6"])
+  end
+
+  defp verify_tailscale_is_up(ip) do
+    case System.cmd("tailscale", ["status"]) do
+      {_, 0} -> ip
+      {_, _} -> raise "Tailscale is not running"
+    end
+  end
+
+  defp exec_tailscale(args) do
+    case System.cmd("tailscale", args) do
+      {ip, 0} -> IP.from_string!(String.trim(ip))
+      {_, _} -> raise "Failed to get IP from tailscale"
+    end
+  end
+end
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
@@ -46,8 +82,9 @@ if config_env() == :prod do
       """
 
   host = System.get_env("PHX_HOST") || "localhost"
-  bind = System.get_env("BIND") || "127.0.0.1"
   port = String.to_integer(System.get_env("PORT") || "4000")
+  bind = System.get_env("BIND") || "127.0.0.1"
+  ip = BindToIp.get_ip(bind)
 
   config :freedive, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
@@ -58,11 +95,11 @@ if config_env() == :prod do
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
       # See the documentation on https://hexdocs.pm/bandit/Bandit.html#t:options/0
       # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: IP.from_string!(bind),
+      ip: ip,
       port: port,
       cipher_suite: :strong,
       keyfile: System.get_env("TLS_KEY_PATH"),
-      certfile: System.get_env("TLS_CERT_PATH"),
+      certfile: System.get_env("TLS_CERT_PATH")
     ],
     secret_key_base: secret_key_base
 
