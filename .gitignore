@@ -41,3 +41,12 @@ npm-debug.log
 
 # Package files
 *.pkg
+
+# .env files
+*.env
+
+# tls files
+tls.*
+
+# local run scripts
+run*.sh
