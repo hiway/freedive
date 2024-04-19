@@ -34,10 +34,10 @@ fi
 
 
 # Check if the secret-key is already set in @env_file
-if grep -q "CHANGE-ME" <%= @env_file %> ; then
+if grep -q "CHANGE-SECRET" <%= @env_file %> ; then
   echo "[create] Secret-key for web server"
   SECRET_KEY="$( openssl rand -base64 128 | strings | grep -o '[[:alnum:]]' | head -n 64 | tr -d '\n'; echo )"
-  sed -i '' -e "s/CHANGE-ME/${SECRET_KEY}/g" <%= @env_file %>
+  sed -i '' -e "s/CHANGE-SECRET/${SECRET_KEY}/g" <%= @env_file %>
 else
   echo "[ok] Secret-key for web server"
 fi
@@ -51,7 +51,7 @@ else
   read -p "yes/no: " install_doas
 
   if [ "$install_doas" != "yes" ] ; then
-    echo "[skip] doas; run 'service <%= name %> init' if you change your mind"
+    echo "[skip] doas; run 'service <%= @name %> init' if you change your mind"
   else
     pkg install -U -y doas
     echo "[ok] install doas"
@@ -76,4 +76,24 @@ if pw groupshow wheel | grep -q <%= @user %> ; then
 else
   echo "[add] <%= @user %> to wheel group"
   pw groupmod wheel -m <%= @user %>
+fi
+
+# Check if "CHANGE-COOKIE" exists in the env file
+if grep -q "CHANGE-COOKIE" <%= @env_file %> ; then
+  # Ask if user has a Release Cookie or wants to generate one
+  echo "[query] Do you have a Release Cookie from another node? (type no to generate one)"
+  read -p "yes/no: " has_cookie
+
+  if [ "$has_cookie" == "yes" ] ; then
+    # Let user input the Release Cookie
+    echo "[create] Release Cookie"
+    read -p "Release Cookie: " RELEASE_COOKIE
+    sed -i '' -e "s/CHANGE-COOKIE/${RELEASE_COOKIE}/g" <%= @env_file %>
+  else
+    echo "[create] Release Cookie"
+    RELEASE_COOKIE="$( openssl rand -base64 128 | strings | grep -o '[[:alnum:]]' | head -n 64 | tr -d '\n'; echo )"
+    sed -i '' -e "s/CHANGE-COOKIE/${RELEASE_COOKIE}/g" <%= @env_file %>
+  fi
+else
+  echo "[ok] Release Cookie"
 fi
