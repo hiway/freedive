@@ -65,7 +65,7 @@ if [ -f /usr/local/etc/doas.conf ] ; then
     echo "[ok] doas is configured"
   else
     echo "permit nopass :wheel" >> /usr/local/etc/doas.conf
-    echo "[allow] wheel to run as root without password"
+    echo "[allow] members of wheel group to run as root without password"
   fi
 fi
 
