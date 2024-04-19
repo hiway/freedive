@@ -32,6 +32,7 @@ INNER_EOF
   chown -R <%= @user %>:<%= @group %> <%= @data_dir %>
 fi
 
+
 # Check if the secret-key is already set in @env_file
 if grep -q "CHANGE-ME" <%= @env_file %> ; then
   echo "[create] Secret-key for web server"
@@ -39,4 +40,40 @@ if grep -q "CHANGE-ME" <%= @env_file %> ; then
   sed -i '' -e "s/CHANGE-ME/${SECRET_KEY}/g" <%= @env_file %>
 else
   echo "[ok] Secret-key for web server"
+fi
+
+
+# Install doas and configure it to allow wheel to run as root without password
+if [ -f /usr/local/etc/doas.conf ] ; then
+  echo "[ok] doas is already installed"
+else
+  echo "[query] Do you want to install doas and configure it to allow wheel to run as root without password?"
+  read -p "yes/no: " install_doas
+
+  if [ "$install_doas" != "yes" ] ; then
+    echo "[skip] doas"
+  else
+    pkg install -U -y doas
+    echo "[ok] install doas"
+  fi
+fi
+
+
+# Check if the configuration is already set
+if [ -f /usr/local/etc/doas.conf ] ; then
+  if grep -q "permit nopass keepenv :wheel" /usr/local/etc/doas.conf ; then
+    echo "[ok] doas is already configured"
+  else
+    echo "permit nopass :wheel" >> /usr/local/etc/doas.conf
+    echo "[allow] wheel to run as root without password"
+  fi
+fi
+
+
+# Ensure user "<%= @user %>" is in wheel group
+if pw groupshow wheel | grep -q <%= @user %> ; then
+  echo "[ok] <%= @user %> is in wheel group"
+else
+  echo "[add] <%= @user %> to wheel group"
+  pw groupmod wheel -m <%= @user %>
 fi
