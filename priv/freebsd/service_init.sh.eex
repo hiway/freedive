@@ -45,7 +45,7 @@ fi
 
 # Install doas and configure it to allow wheel to run as root without password
 if [ -f /usr/local/etc/doas.conf ] ; then
-  echo "[ok] doas is already installed"
+  echo "[ok] doas is installed"
 else
   echo "[query] Do you want to install doas and configure it to allow wheel to run as root without password?"
   read -p "yes/no: " install_doas
@@ -62,7 +62,7 @@ fi
 # Check if the configuration is already set
 if [ -f /usr/local/etc/doas.conf ] ; then
   if grep -q "permit nopass keepenv :wheel" /usr/local/etc/doas.conf ; then
-    echo "[ok] doas is already configured"
+    echo "[ok] doas is configured"
   else
     echo "permit nopass :wheel" >> /usr/local/etc/doas.conf
     echo "[allow] wheel to run as root without password"
