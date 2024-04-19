@@ -51,7 +51,7 @@ else
   read -p "yes/no: " install_doas
 
   if [ "$install_doas" != "yes" ] ; then
-    echo "[skip] doas"
+    echo "[skip] doas; run 'service <%= name %> init' if you change your mind"
   else
     pkg install -U -y doas
     echo "[ok] install doas"
