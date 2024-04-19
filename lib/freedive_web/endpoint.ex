@@ -7,10 +7,13 @@ defmodule FreediveWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_freedive_key",
-    signing_salt: "Qag3EESR"
+    signing_salt: "xnvEwDWb",
+    same_site: "Lax"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]],
+    longpoll: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -19,8 +22,8 @@ defmodule FreediveWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :freedive,
-    gzip: true,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    gzip: false,
+    only: FreediveWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

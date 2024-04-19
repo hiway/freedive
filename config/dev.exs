@@ -4,14 +4,15 @@ import Config
 config :freedive, Freedive.Repo,
   database: Path.expand("../freedive_dev.db", Path.dirname(__ENV__.file)),
   pool_size: 5,
+  stacktrace: true,
   show_sensitive_data_on_connection_error: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with esbuild to bundle .js and .css sources.
+# watchers to your application. For example, we can use it
+# to bundle .js and .css sources.
 config :freedive, FreediveWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
@@ -19,10 +20,10 @@ config :freedive, FreediveWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "wQ5D5RHtk+vuahpBvi9PUYBtBJkX87XMAgot7lwObOAjlUEk/NXyTbCn5GZyU9za",
+  secret_key_base: "celuisz10diUmQizw1ZWXMKgp0DTjSlSraXFRqve4Vi+2AjvFYbY8YgGHV/PJ1aU",
   watchers: [
-    # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:freedive, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:freedive, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -33,7 +34,6 @@ config :freedive, FreediveWeb.Endpoint,
 #
 #     mix phx.gen.cert
 #
-# Note that this task requires Erlang/OTP 20 or later.
 # Run `mix help phx.gen.cert` for more information.
 #
 # The `http:` config above can be replaced with:
@@ -53,12 +53,14 @@ config :freedive, FreediveWeb.Endpoint,
 config :freedive, FreediveWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/freedive_web/(live|views)/.*(ex)$",
-      ~r"lib/freedive_web/templates/.*(eex)$"
+      ~r"lib/freedive_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
+
+# Enable dev routes for dashboard and mailbox
+config :freedive, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
@@ -69,3 +71,9 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Include HEEx debug annotations as HTML comments in rendered markup
+config :phoenix_live_view, :debug_heex_annotations, true
+
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false

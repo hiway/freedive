@@ -19,6 +19,9 @@ erl_crash.dump
 # Also ignore archive artifacts (built via "mix archive.build").
 *.ez
 
+# Temporary files, for example, from tests.
+/tmp/
+
 # Ignore package tarball (built via "mix hex.build").
 freedive-*.tar
 
@@ -36,15 +39,3 @@ npm-debug.log
 *.db
 *.db-*
 
-tls.crt
-tls.key
-request.txt
-freedive.toml
-
-*.dump
-pkg/
-favicon-*.ico
-robots-*.txt
-robots-*.txt.gz
-robots.txt.gz
-phoenix-*.png

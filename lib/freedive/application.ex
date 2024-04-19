@@ -8,16 +8,19 @@ defmodule Freedive.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Freedive.Repo,
-      # Start the Telemetry supervisor
       FreediveWeb.Telemetry,
-      # Start the PubSub system
+      Freedive.Repo,
+      {Ecto.Migrator,
+        repos: Application.fetch_env!(:freedive, :ecto_repos),
+        skip: skip_migrations?()},
+      {DNSCluster, query: Application.get_env(:freedive, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Freedive.PubSub},
-      # Start the Endpoint (http/https)
-      FreediveWeb.Endpoint
+      # Start the Finch HTTP client for sending emails
+      {Finch, name: Freedive.Finch},
       # Start a worker by calling: Freedive.Worker.start_link(arg)
-      # {Freedive.Worker, arg}
+      # {Freedive.Worker, arg},
+      # Start to serve requests, typically the last entry
+      FreediveWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -32,5 +35,10 @@ defmodule Freedive.Application do
   def config_change(changed, _new, removed) do
     FreediveWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp skip_migrations?() do
+    # By default, sqlite migrations are run when using a release
+    System.get_env("RELEASE_NAME") != nil
   end
 end

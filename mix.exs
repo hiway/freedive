@@ -4,22 +4,12 @@ defmodule Freedive.MixProject do
   def project do
     [
       app: :freedive,
-      version: "0.1.1",
-      elixir: "~> 1.12",
+      version: "0.1.0",
+      elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps(),
-      releases: [
-        freedive: [
-          include_erts: true,
-          include_executables_for: [:unix],
-          applications: [
-            runtime_tools: :permanent
-          ]
-        ]
-      ],
+      deps: deps()
     ]
   end
 
@@ -29,7 +19,7 @@ defmodule Freedive.MixProject do
   def application do
     [
       mod: {Freedive.Application, []},
-      extra_applications: [:logger, :runtime_tools, :crypto]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -42,28 +32,32 @@ defmodule Freedive.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:argon2_elixir, "~> 2.0"},
-      {:phoenix, "~> 1.6.6"},
+      {:phoenix, "~> 1.7.11"},
       {:phoenix_ecto, "~> 4.4"},
-      {:ecto_sql, "~> 3.6"},
+      {:ecto_sql, "~> 3.10"},
       {:ecto_sqlite3, ">= 0.0.0"},
-      {:phoenix_html, "~> 3.0"},
+      {:phoenix_html, "~> 4.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.17.5"},
+      {:phoenix_live_view, "~> 0.20.2"},
       {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_dashboard, "~> 0.6"},
-      {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
-      {:swoosh, "~> 1.3"},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
+      {:swoosh, "~> 1.5"},
+      {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.18"},
+      {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
-      {:toml, "~> 0.6.2"},
-      {:net_address, "~> 0.3.0"},
-      {:pushover, "~> 0.3.3"},
-      {:mime, "~> 2.0.2", override: true},
-      {:telemetry, "~> 1.0.0", override: true},
+      {:dns_cluster, "~> 0.1.1"},
+      {:bandit, "~> 1.2"}
     ]
   end
 
@@ -75,11 +69,17 @@ defmodule Freedive.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind freedive", "esbuild freedive"],
+      "assets.deploy": [
+        "tailwind freedive --minify",
+        "esbuild freedive --minify",
+        "phx.digest"
+      ]
     ]
   end
 end

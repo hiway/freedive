@@ -1,8 +1,5 @@
 import Config
 
-# Only in tests, remove the complexity from the password hashing algorithm
-config :argon2_elixir, t_cost: 1, m_cost: 8
-
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -17,14 +14,17 @@ config :freedive, Freedive.Repo,
 # you can enable the server option below.
 config :freedive, FreediveWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "59u8Xa3Ai4afKv4DVNEoxQsyY3uZmGSS4AHXxZ2ugyNX8D7UzIHqSG8qVl5V7Jlx",
+  secret_key_base: "GR6xgew+7RFeCDvnG9BU4oNTmHsj4Ag9K4CRSzPwncTP9dhxs+ZLLqUDfUN6H+Dv",
   server: false
 
 # In test we don't send emails.
 config :freedive, Freedive.Mailer, adapter: Swoosh.Adapters.Test
 
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false
+
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
