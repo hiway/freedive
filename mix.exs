@@ -4,12 +4,16 @@ defmodule Freedive.MixProject do
   def project do
     [
       app: :freedive,
-      version: "0.1.0",
+      version: "0.2.0",
+      description: "Dive into FreeBSD",
+      homepage_url: "https://github.com/hiway/freedive",
+      maintainer: "harshad@sharma.io",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      freebsd_pkg: freebsd_pkg()
     ]
   end
 
@@ -58,7 +62,14 @@ defmodule Freedive.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
-      {:phx_tailwind_freebsd, "~> 0.2.1", runtime: Mix.env() == :dev}
+      {:phx_tailwind_freebsd, "~> 0.2.1", runtime: Mix.env() == :dev},
+      {:mix_freebsd_pkg, path: "../mix_freebsd_pkg", runtime: Mix.env() == :dev}
+    ]
+  end
+
+  defp freebsd_pkg do
+    [
+      service_commands: ["init"]
     ]
   end
 
@@ -80,7 +91,14 @@ defmodule Freedive.MixProject do
         "tailwind freedive --minify",
         "esbuild freedive --minify",
         "phx.digest"
-      ]
+      ],
+      "package.freebsd": ["compile", "assets.deploy", "release --overwrite", "freebsd.pkg"]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: ["package.freebsd": :prod],
     ]
   end
 end
