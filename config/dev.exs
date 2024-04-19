@@ -1,5 +1,33 @@
 import Config
 
+defmodule BindToIpDev do
+  def get_ip(bind) do
+    case bind do
+      "local4" ->
+        {127, 0, 0, 1}
+
+      "local6" ->
+        {0, 0, 0, 0, 0, 0, 0, 1}
+
+      "all4" ->
+        {0, 0, 0, 0}
+
+      "all6" ->
+        {0, 0, 0, 0, 0, 0, 0, 0}
+
+      _ ->
+        raise """
+        Invalid bind address: #{inspect(bind)}.
+        Please use one of the following:
+        - local4
+        - local6
+        - all4
+        - all6
+        """
+    end
+  end
+end
+
 # Configure your database
 config :freedive, Freedive.Repo,
   database: Path.expand("../freedive_dev.db", Path.dirname(__ENV__.file)),
@@ -13,10 +41,15 @@ config :freedive, Freedive.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
+host = System.get_env("PHX_HOST") || "localhost"
+port = String.to_integer(System.get_env("PORT") || "4000")
+bind = System.get_env("BIND") || "127.0.0.1"
+ip = BindToIpDev.get_ip(bind)
+
 config :freedive, FreediveWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: ip, port: port],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
