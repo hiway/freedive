@@ -1,2 +1,10 @@
 <.flash_group flash={@flash} />
 <%= @node_name %>
+
+<hr />
+
+<%= for node <- @node_list do %>
+  <div>
+    <%= node %>
+  </div>
+<% end %>
