@@ -43,7 +43,7 @@ config :freedive, Freedive.Repo,
 # to bundle .js and .css sources.
 host = System.get_env("PHX_HOST") || "localhost"
 port = String.to_integer(System.get_env("PORT") || "4000")
-bind = System.get_env("BIND") || "127.0.0.1"
+bind = System.get_env("BIND") || "local4"
 ip = BindToIpDev.get_ip(bind)
 
 config :freedive, FreediveWeb.Endpoint,
