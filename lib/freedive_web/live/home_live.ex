@@ -15,9 +15,11 @@ defmodule FreediveWeb.HomeLive do
     ~H"""
     <p>This node: <%= @node_name %></p>
     <p>Connected nodes:</p>
+    <ul>
     <%= for node <- @node_list do %>
-      <p><%= node %></p>
+      <li><%= node %></li>
     <% end %>
+    </ul>
     <hr />
     <form phx-submit="node_connect" phx-page-loading>
       <label for="node_name">Node name:</label>
