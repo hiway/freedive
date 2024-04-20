@@ -11,12 +11,12 @@ defmodule Freedive.Application do
       FreediveWeb.Telemetry,
       Freedive.Repo,
       {Ecto.Migrator,
-        repos: Application.fetch_env!(:freedive, :ecto_repos),
-        skip: skip_migrations?()},
+       repos: Application.fetch_env!(:freedive, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:freedive, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Freedive.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Freedive.Finch},
+      {Cluster.Supervisor, [topologies(), [name: Freedive.ClusterSupervisor]]},
       # Start a worker by calling: Freedive.Worker.start_link(arg)
       # {Freedive.Worker, arg},
       # Start to serve requests, typically the last entry
@@ -40,5 +40,20 @@ defmodule Freedive.Application do
   defp skip_migrations?() do
     # By default, sqlite migrations are run when using a release
     System.get_env("RELEASE_NAME") != nil
+  end
+
+  defp topologies() do
+    nodes = System.get_env("NODES") || ""
+    nodes = String.split(nodes, ",") |> Enum.map(&String.trim/1) |> Enum.map(&String.to_atom/1)
+
+    [
+      epmd_cluster: [
+        strategy: Elixir.Cluster.Strategy.Epmd,
+        config: [
+          timeout: 30_000,
+          hosts: nodes
+        ]
+      ]
+    ]
   end
 end

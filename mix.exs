@@ -63,6 +63,7 @@ defmodule Freedive.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:net_address, "~> 0.3.1"},
+      {:libcluster, "~> 3.3"},
       {:phx_tailwind_freebsd, "~> 0.2.1", runtime: Mix.env() == :dev},
       {:mix_freebsd_pkg, path: "../mix_freebsd_pkg", runtime: Mix.env() == :dev}
     ]
