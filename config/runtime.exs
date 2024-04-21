@@ -33,6 +33,13 @@ secret_key_base =
     You can generate one by calling: mix phx.gen.secret
     """
 
+database_path =
+  System.get_env("DATABASE_PATH") ||
+    raise """
+    environment variable DATABASE_PATH is missing.
+    For example: /etc/freedive/freedive.db
+    """
+
 host = System.get_env("PHX_HOST") || "localhost"
 port = String.to_integer(System.get_env("PORT") || "4000")
 bind = System.get_env("BIND") || "127.0.0.1"
@@ -49,16 +56,12 @@ if config_env() == :dev do
       esbuild: {Esbuild, :install_and_run, [:freedive, ~w(--sourcemap=inline --watch)]},
       tailwind: {Tailwind, :install_and_run, [:freedive, ~w(--watch)]}
     ]
+
+  config :freedive, Freedive.Repo,
+    database: Path.expand("../#{database_path}", Path.dirname(__ENV__.file))
 end
 
 if config_env() == :prod do
-  database_path =
-    System.get_env("DATABASE_PATH") ||
-      raise """
-      environment variable DATABASE_PATH is missing.
-      For example: /etc/freedive/freedive.db
-      """
-
   config :freedive, Freedive.Repo,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
