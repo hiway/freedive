@@ -1,41 +1,5 @@
 import Config
-import IP
-
-defmodule BindToIp do
-  def get_ip(bind) do
-    case bind do
-      "tailscale4" -> get_tailscale_ip4() |> verify_tailscale_is_up()
-      "tailscale6" -> get_tailscale_ip6() |> verify_tailscale_is_up()
-      "local4" -> IP.from_string!("127.0.0.1")
-      "local6" -> IP.from_string!("0.0.0.0.0.0.0.0")
-      "all4" -> IP.from_string!("0.0.0.0")
-      "all6" -> IP.from_string!("::")
-      other -> IP.from_string!(other)
-    end
-  end
-
-  defp get_tailscale_ip4() do
-    exec_tailscale(["ip", "-4"])
-  end
-
-  defp get_tailscale_ip6() do
-    exec_tailscale(["ip", "-6"])
-  end
-
-  defp verify_tailscale_is_up(ip) do
-    case System.cmd("tailscale", ["status"]) do
-      {_, 0} -> ip
-      {_, _} -> raise "Tailscale is not running"
-    end
-  end
-
-  defp exec_tailscale(args) do
-    case System.cmd("tailscale", args) do
-      {ip, 0} -> IP.from_string!(String.trim(ip))
-      {_, _} -> raise "Failed to get IP from tailscale"
-    end
-  end
-end
+alias PhxConfigUtil.BindToIp
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -57,6 +21,36 @@ if System.get_env("PHX_SERVER") do
   config :freedive, FreediveWeb.Endpoint, server: true
 end
 
+# The secret key base is used to sign/encrypt cookies and other secrets.
+# A default value is used in config/dev.exs and config/test.exs but you
+# want to use a different value for prod and you most likely don't want
+# to check this value into version control, so we use an environment
+# variable instead.
+secret_key_base =
+  System.get_env("SECRET_KEY_BASE") ||
+    raise """
+    environment variable SECRET_KEY_BASE is missing.
+    You can generate one by calling: mix phx.gen.secret
+    """
+
+host = System.get_env("PHX_HOST") || "localhost"
+port = String.to_integer(System.get_env("PORT") || "4000")
+bind = System.get_env("BIND") || "127.0.0.1"
+ip = BindToIp.parse!(bind)
+
+if config_env() == :dev do
+  config :freedive, FreediveWeb.Endpoint,
+    http: [ip: ip, port: port],
+    check_origin: false,
+    code_reloader: true,
+    debug_errors: true,
+    secret_key_base: secret_key_base,
+    watchers: [
+      esbuild: {Esbuild, :install_and_run, [:freedive, ~w(--sourcemap=inline --watch)]},
+      tailwind: {Tailwind, :install_and_run, [:freedive, ~w(--watch)]}
+    ]
+end
+
 if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") ||
@@ -68,23 +62,6 @@ if config_env() == :prod do
   config :freedive, Freedive.Repo,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
-
-  # The secret key base is used to sign/encrypt cookies and other secrets.
-  # A default value is used in config/dev.exs and config/test.exs but you
-  # want to use a different value for prod and you most likely don't want
-  # to check this value into version control, so we use an environment
-  # variable instead.
-  secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
-      raise """
-      environment variable SECRET_KEY_BASE is missing.
-      You can generate one by calling: mix phx.gen.secret
-      """
-
-  host = System.get_env("PHX_HOST") || "localhost"
-  port = String.to_integer(System.get_env("PORT") || "4000")
-  bind = System.get_env("BIND") || "127.0.0.1"
-  ip = BindToIp.get_ip(bind)
 
   config :freedive, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 

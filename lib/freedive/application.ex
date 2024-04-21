@@ -44,7 +44,10 @@ defmodule Freedive.Application do
 
   defp topologies() do
     nodes = System.get_env("NODES") || ""
-    nodes = String.split(nodes, ",") |> Enum.map(&String.trim/1) |> Enum.map(&String.to_atom/1)
+    nodes = String.split(nodes, " ")
+      |> Enum.map(&String.trim/1)
+      |> Enum.reject(&String.trim(&1) == "")
+      |> Enum.map(&String.to_atom/1)
 
     [
       epmd_cluster: [
