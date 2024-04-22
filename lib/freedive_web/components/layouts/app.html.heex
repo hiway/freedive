@@ -1,2 +1,5 @@
 <.flash_group flash={@flash} />
+<%= live_render(@socket, FreediveWeb.NavbarLive, id: "navbar") %>
+<.section>
 <%= @inner_content %>
+</.section>
