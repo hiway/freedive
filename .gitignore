@@ -50,3 +50,6 @@ tls.*
 
 # local run scripts
 run*.sh
+
+# temp files
+_attic/

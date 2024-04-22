@@ -17,8 +17,10 @@ defmodule Freedive.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: Freedive.Finch},
       {Cluster.Supervisor, [topologies(), [name: Freedive.ClusterSupervisor]]},
-      # Start a worker by calling: Freedive.Worker.start_link(arg)
-      # {Freedive.Worker, arg},
+      # Start node tracker
+      {Freedive.NodeTracker, [name: Freedive.NodeTracker, pubsub_server: Freedive.PubSub]},
+      # Start system supervisor
+      {Freedive.NodeSupervisor, [pubsub: Freedive.PubSub]},
       # Start to serve requests, typically the last entry
       FreediveWeb.Endpoint
     ]
@@ -44,9 +46,11 @@ defmodule Freedive.Application do
 
   defp topologies() do
     nodes = System.get_env("NODES") || ""
-    nodes = String.split(nodes, " ")
+
+    nodes =
+      String.split(nodes, " ")
       |> Enum.map(&String.trim/1)
-      |> Enum.reject(&String.trim(&1) == "")
+      |> Enum.reject(&(String.trim(&1) == ""))
       |> Enum.map(&String.to_atom/1)
 
     [

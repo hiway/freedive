@@ -85,6 +85,7 @@ defmodule FreediveWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import FreediveWeb.CoreComponents
+      import FreediveWeb.Bulma
       import FreediveWeb.Gettext
 
       # Shortcut for generating JS commands

@@ -8,37 +8,9 @@ alias PhxConfigUtil.BindToIp
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
-# ## Using releases
-#
-# If you use `mix release`, you need to explicitly enable the server
-# by passing the PHX_SERVER=true when you start it:
-#
-#     PHX_SERVER=true bin/freedive start
-#
-# Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
-# script that automatically sets the env var above.
 if System.get_env("PHX_SERVER") do
   config :freedive, FreediveWeb.Endpoint, server: true
 end
-
-# The secret key base is used to sign/encrypt cookies and other secrets.
-# A default value is used in config/dev.exs and config/test.exs but you
-# want to use a different value for prod and you most likely don't want
-# to check this value into version control, so we use an environment
-# variable instead.
-secret_key_base =
-  System.get_env("SECRET_KEY_BASE") ||
-    raise """
-    environment variable SECRET_KEY_BASE is missing.
-    You can generate one by calling: mix phx.gen.secret
-    """
-
-database_path =
-  System.get_env("DATABASE_PATH") ||
-    raise """
-    environment variable DATABASE_PATH is missing.
-    For example: /etc/freedive/freedive.db
-    """
 
 host = System.get_env("PHX_HOST") || "localhost"
 port = String.to_integer(System.get_env("PORT") || "4000")
@@ -46,22 +18,37 @@ bind = System.get_env("BIND") || "127.0.0.1"
 ip = BindToIp.parse!(bind)
 
 if config_env() == :dev do
+  secret_key_base =
+    System.get_env("SECRET_KEY_BASE") ||
+      "celuisz10diUmQizw1ZWXMKgp0DTjSlSraXFRqve4Vi+2AjvFYbY8YgGHV/PJ1aU"
+
+  database_path =
+    System.get_env("DATABASE_PATH") ||
+      Path.expand("../freedive_dev.db", Path.dirname(__ENV__.file))
+
   config :freedive, FreediveWeb.Endpoint,
     http: [ip: ip, port: port],
-    check_origin: false,
-    code_reloader: true,
-    debug_errors: true,
-    secret_key_base: secret_key_base,
-    watchers: [
-      esbuild: {Esbuild, :install_and_run, [:freedive, ~w(--sourcemap=inline --watch)]},
-      tailwind: {Tailwind, :install_and_run, [:freedive, ~w(--watch)]}
-    ]
+    secret_key_base: secret_key_base
 
   config :freedive, Freedive.Repo,
     database: Path.expand("../#{database_path}", Path.dirname(__ENV__.file))
 end
 
 if config_env() == :prod do
+  secret_key_base =
+    System.get_env("SECRET_KEY_BASE") ||
+      raise """
+      environment variable SECRET_KEY_BASE is missing.
+      You can generate one by calling: mix phx.gen.secret
+      """
+
+  database_path =
+    System.get_env("DATABASE_PATH") ||
+      raise """
+      environment variable DATABASE_PATH is missing.
+      For example: /etc/freedive/freedive.db
+      """
+
   config :freedive, Freedive.Repo,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
