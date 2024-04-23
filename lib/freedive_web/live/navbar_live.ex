@@ -33,7 +33,7 @@ defmodule FreediveWeb.NavbarLive do
       <.navbar_menu>
         <.navbar_start>
           <.navbar_dropdown label="System">
-          <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
               <.icon name="hero-adjustments-horizontal" class="mr-3" /> Preferences
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
@@ -64,7 +64,10 @@ defmodule FreediveWeb.NavbarLive do
               <.icon name="hero-map-pin" class="mr-3" />
               <%= @node_name %>
             </.navbar_item>
-            <.navbar_divider />
+
+            <%= if length(@node_list) > 0 do %>
+              <.navbar_divider />
+            <% end %>
 
             <%= for node <- @node_list do %>
               <.link patch={FreediveWeb.HomeLive} class="navbar-item">
@@ -72,6 +75,13 @@ defmodule FreediveWeb.NavbarLive do
                 <%= node %>
               </.link>
             <% end %>
+
+            <.navbar_divider />
+
+            <.navbar_item href="#">
+              <.icon name="hero-pencil-square" class="mr-3" />
+              Manage Nodes
+            </.navbar_item>
           </.navbar_dropdown>
 
           <.navbar_dropdown label="Network">
@@ -79,7 +89,7 @@ defmodule FreediveWeb.NavbarLive do
               <.icon name="hero-wifi" class="mr-3" /> Local
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-cube-transparent" class="mr-3" /> Private
+              <.icon name="hero-lock-closed" class="mr-3" /> Private
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
               <.icon name="hero-globe-alt" class="mr-3" /> Public
@@ -127,7 +137,7 @@ defmodule FreediveWeb.NavbarLive do
 
         <.navbar_end>
           <.navbar_dropdown label="Notifications" class="is-right">
-          <.navbar_item href="#">
+            <.navbar_item href="#">
               <.icon name="hero-bell-alert" class="mr-3" /> Alerts
             </.navbar_item>
 
@@ -138,7 +148,7 @@ defmodule FreediveWeb.NavbarLive do
           </.navbar_dropdown>
 
           <.navbar_dropdown label="Account" class="is-right">
-          <.navbar_item href="#">
+            <.navbar_item href="#">
               <.icon name="hero-adjustments-vertical" class="mr-3" /> Preferences
             </.navbar_item>
 
