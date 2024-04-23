@@ -21,6 +21,8 @@ defmodule Freedive.Application do
       {Freedive.NodeTracker, [name: Freedive.NodeTracker, pubsub_server: Freedive.PubSub]},
       # Start system supervisor
       {Freedive.NodeSupervisor, [pubsub: Freedive.PubSub]},
+      # Start the Telemetry collector
+      {Mobius, metrics: metrics(), persistence_dir: "priv/metrics", autosave_interval: 60},
       # Start to serve requests, typically the last entry
       FreediveWeb.Endpoint
     ]
@@ -42,6 +44,12 @@ defmodule Freedive.Application do
   defp skip_migrations?() do
     # By default, sqlite migrations are run when using a release
     System.get_env("RELEASE_NAME") != nil
+  end
+
+  def metrics() do
+    [
+      Telemetry.Metrics.last_value("vm.memory.total", unit: {:byte, :kilobyte})
+    ]
   end
 
   defp topologies() do
