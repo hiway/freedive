@@ -19,6 +19,11 @@ defmodule FreediveWeb.Router do
 
     live "/", HomeLive
     live "/system/preferences", SystemPreferencesLive
+    live "/system/secrets", SystemSecretsLive
+    live "system/security", SystemSecurityLive
+    live "/system/backups", SystemBackupsLive
+    live "/system/snapshots", SystemSnapshotsLive
+    live "/system/updates", SystemUpdatesLive
   end
 
   # Other scopes may use custom stacks.

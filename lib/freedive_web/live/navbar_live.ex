@@ -38,23 +38,23 @@ defmodule FreediveWeb.NavbarLive do
             </.link>
 
             <.navbar_divider />
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/system/secrets" class="navbar-item">
               <.icon name="hero-finger-print" class="mr-3" /> Secrets
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/system/security" class="navbar-item">
               <.icon name="hero-shield-check" class="mr-3" /> Security
             </.link>
 
             <.navbar_divider />
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/system/backups" class="navbar-item">
               <.icon name="hero-folder-arrow-down" class="mr-3" /> Backups
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/system/snapshots" class="navbar-item">
               <.icon name="hero-archive-box-arrow-down" class="mr-3" /> Snapshots
             </.link>
 
             <.navbar_divider />
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/system/updates" class="navbar-item">
               <.icon name="hero-cloud-arrow-down" class="mr-3" /> Software Update
             </.link>
           </.navbar_dropdown>
@@ -79,8 +79,7 @@ defmodule FreediveWeb.NavbarLive do
             <.navbar_divider />
 
             <.navbar_item href="#">
-              <.icon name="hero-pencil-square" class="mr-3" />
-              Manage Nodes
+              <.icon name="hero-pencil-square" class="mr-3" /> Manage Nodes
             </.navbar_item>
           </.navbar_dropdown>
 
@@ -139,7 +138,7 @@ defmodule FreediveWeb.NavbarLive do
 
         <.navbar_end>
           <.navbar_dropdown label="Notifications" class="is-right">
-          <.navbar_item href="#">
+            <.navbar_item href="#">
               <.icon name="hero-bell-alert" class="mr-3" /> Alerts
             </.navbar_item>
             <.navbar_item href="#">
