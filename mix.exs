@@ -23,7 +23,7 @@ defmodule Freedive.MixProject do
   def application do
     [
       mod: {Freedive.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
 
