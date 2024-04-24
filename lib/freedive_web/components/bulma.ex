@@ -3,6 +3,7 @@ defmodule FreediveWeb.Bulma do
   Components for Bulma CSS.
   """
   use Phoenix.Component
+  import FreediveWeb.CoreComponents
 
   @doc """
   Renders navbar.
@@ -392,5 +393,70 @@ defmodule FreediveWeb.Bulma do
       <%= render_slot(@inner_block) %>
     </div>
     """
+  end
+
+  @doc """
+  Renders panel.
+  """
+  attr :class, :string, default: nil
+  attr :search, :string, default: nil
+
+  slot :heading, required: true
+  slot :tabs, required: false
+  slot :inner_block, required: true
+
+  def panel(assigns) do
+    ~H"""
+    <nav class={["panel", @class]}>
+      <p class="panel-heading">
+        <%= render_slot(@heading) %>
+      </p>
+      <%= if @search == "true" do %>
+        <div class="panel-block">
+          <p class="control has-icons-left">
+            <input class="input" type="text" placeholder="Search" />
+            <span class="icon is-left">
+              <.icon name="hero-magnifying-glass" />
+            </span>
+          </p>
+        </div>
+      <% end %>
+      <p class="panel-tabs">
+        <%= render_slot(@tabs) %>
+      </p>
+      <%= render_slot(@inner_block) %>
+    </nav>
+    """
+  end
+
+  @doc """
+  Renders panel block.
+  """
+  attr :class, :string, default: nil
+  attr :icon, :string, required: true
+  attr :icon_class, :string, default: nil
+  attr :active, :string, default: "false"
+
+  slot :inner_block, required: true
+
+  def panel_block(assigns) do
+    ~H"""
+    <a class={["panel-block", append_is_active(@class, @active)]}>
+      <span class={["panel-icon mb-2", @icon_class]}>
+        <.icon name={@icon} />
+      </span>
+      <span class="ml-2">
+        <%= render_slot(@inner_block) %>
+      </span>
+    </a>
+    """
+  end
+
+  defp append_is_active(class, active) do
+    if active == "true" do
+      "#{class} is-active"
+    else
+      class
+    end
   end
 end
