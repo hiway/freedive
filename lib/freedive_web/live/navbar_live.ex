@@ -49,9 +49,6 @@ defmodule FreediveWeb.NavbarLive do
             <.link href="/system/backups" class="navbar-item">
               <.icon name="hero-folder-arrow-down" class="mr-3" /> Backups
             </.link>
-            <.link href="/system/snapshots" class="navbar-item">
-              <.icon name="hero-archive-box-arrow-down" class="mr-3" /> Snapshots
-            </.link>
 
             <.navbar_divider />
             <.link href="/system/updates" class="navbar-item">
