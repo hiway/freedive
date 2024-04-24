@@ -18,6 +18,7 @@ defmodule FreediveWeb.Router do
     pipe_through :browser
 
     live "/", HomeLive
+    live "/system/preferences", SystemPreferencesLive
   end
 
   # Other scopes may use custom stacks.
