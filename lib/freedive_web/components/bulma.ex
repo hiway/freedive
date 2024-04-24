@@ -379,4 +379,18 @@ defmodule FreediveWeb.Bulma do
     """
   end
 
+  @doc """
+  Renders container.
+  """
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+
+  def container(assigns) do
+    ~H"""
+    <div class={["container", @class]}>
+      <%= render_slot(@inner_block) %>
+    </div>
+    """
+  end
 end
