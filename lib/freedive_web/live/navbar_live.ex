@@ -33,33 +33,33 @@ defmodule FreediveWeb.NavbarLive do
       <.navbar_menu>
         <.navbar_start>
           <.navbar_dropdown label="System">
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/system/preferences" class="navbar-item">
               <.icon name="hero-adjustments-horizontal" class="mr-3" /> Preferences
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-shield-check" class="mr-3" /> Secrets
-            </.link>
+
             <.navbar_divider />
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-folder-arrow-down" class="mr-3" /> Backup
+              <.icon name="hero-finger-print" class="mr-3" /> Secrets
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-folder-open" class="mr-3" /> Restore
+              <.icon name="hero-shield-check" class="mr-3" /> Security
             </.link>
+
             <.navbar_divider />
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-archive-box-arrow-down" class="mr-3" /> Snapshot
+              <.icon name="hero-folder-arrow-down" class="mr-3" /> Backups
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-arrow-uturn-up" class="mr-3" /> Rollback
+              <.icon name="hero-archive-box-arrow-down" class="mr-3" /> Snapshots
             </.link>
+
             <.navbar_divider />
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
               <.icon name="hero-cloud-arrow-down" class="mr-3" /> Software Update
             </.link>
           </.navbar_dropdown>
 
-          <.navbar_dropdown label="Node">
+          <.navbar_dropdown label="Cluster">
             <.navbar_item href="#">
               <.icon name="hero-map-pin" class="mr-3" />
               <%= @node_name %>
@@ -103,7 +103,7 @@ defmodule FreediveWeb.NavbarLive do
             </.link>
           </.navbar_dropdown>
 
-          <.navbar_dropdown label="Data">
+          <.navbar_dropdown label="Storage">
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
               <.icon name="hero-server-stack" class="mr-3" /> Local
             </.link>
@@ -124,10 +124,12 @@ defmodule FreediveWeb.NavbarLive do
               <.icon name="hero-rocket-launch" class="mr-3" /> Apps
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-code-bracket" class="mr-3" /> Functions
-            </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
               <.icon name="hero-puzzle-piece" class="mr-3" /> Services
+            </.link>
+
+            <.navbar_divider />
+            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+              <.icon name="hero-code-bracket" class="mr-3" /> Functions
             </.link>
             <.link patch={FreediveWeb.HomeLive} class="navbar-item">
               <.icon name="hero-squares-2x2" class="mr-3" /> Tasks
@@ -137,8 +139,14 @@ defmodule FreediveWeb.NavbarLive do
 
         <.navbar_end>
           <.navbar_dropdown label="Notifications" class="is-right">
-            <.navbar_item href="#">
+          <.navbar_item href="#">
               <.icon name="hero-bell-alert" class="mr-3" /> Alerts
+            </.navbar_item>
+            <.navbar_item href="#">
+              <.icon name="hero-newspaper" class="mr-3" /> Logs
+            </.navbar_item>
+            <.navbar_item href="#">
+              <.icon name="hero-presentation-chart-bar" class="mr-3" /> Metrics
             </.navbar_item>
 
             <.navbar_divider />
