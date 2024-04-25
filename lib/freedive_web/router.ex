@@ -18,11 +18,20 @@ defmodule FreediveWeb.Router do
     pipe_through :browser
 
     live "/", HomeLive
+
     live "/system/preferences", SystemPreferencesLive
     live "/system/secrets", SystemSecretsLive
-    live "system/security", SystemSecurityLive
+    live "/system/security", SystemSecurityLive
     live "/system/backups", SystemBackupsLive
     live "/system/updates", SystemUpdatesLive
+
+    live "/cluster/nodes", ClusterNodesLive
+
+    live "/network/local", NetworkLocalLive
+    live "/network/private", NetworkPrivateLive
+    live "/network/public", NetworkPublicLive
+    live "/network/domains", NetworkDomainsLive
+    live "/network/endpoints", NetworkEndpointsLive
   end
 
   # Other scopes may use custom stacks.

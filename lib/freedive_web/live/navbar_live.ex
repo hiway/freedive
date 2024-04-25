@@ -75,26 +75,26 @@ defmodule FreediveWeb.NavbarLive do
 
             <.navbar_divider />
 
-            <.navbar_item href="#">
+            <.navbar_item href="/cluster/nodes">
               <.icon name="hero-pencil-square" class="mr-3" /> Manage Nodes
             </.navbar_item>
           </.navbar_dropdown>
 
           <.navbar_dropdown label="Network">
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/network/local" class="navbar-item">
               <.icon name="hero-wifi" class="mr-3" /> Local
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/network/private" class="navbar-item">
               <.icon name="hero-lock-closed" class="mr-3" /> Private
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/network/public" class="navbar-item">
               <.icon name="hero-globe-alt" class="mr-3" /> Public
             </.link>
             <.navbar_divider />
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/network/domains" class="navbar-item">
               <.icon name="hero-tag" class="mr-3" /> Domains
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/network/endpoints" class="navbar-item">
               <.icon name="hero-arrows-up-down" class="mr-3" /> Endpoints
             </.link>
           </.navbar_dropdown>
