@@ -99,18 +99,18 @@ defmodule FreediveWeb.NavbarLive do
             </.link>
           </.navbar_dropdown>
 
-          <.navbar_dropdown label="Storage">
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
-              <.icon name="hero-server-stack" class="mr-3" /> Local
+          <.navbar_dropdown label="Data">
+            <.link href="/data/local" class="navbar-item">
+              <.icon name="hero-server" class="mr-3" /> Local
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/data/remote" class="navbar-item">
               <.icon name="hero-cloud" class="mr-3" /> Remote
             </.link>
             <.navbar_divider />
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/data/share" class="navbar-item">
               <.icon name="hero-share" class="mr-3" /> Share
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/data/sync" class="navbar-item">
               <.icon name="hero-arrow-path-rounded-square" class="mr-3" /> Sync
             </.link>
           </.navbar_dropdown>

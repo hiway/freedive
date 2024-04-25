@@ -32,6 +32,11 @@ defmodule FreediveWeb.Router do
     live "/network/public", NetworkPublicLive
     live "/network/domains", NetworkDomainsLive
     live "/network/endpoints", NetworkEndpointsLive
+
+    live "/data/local", DataLocalLive
+    live "/data/remote", DataRemoteLive
+    live "/data/share", DataShareLive
+    live "/data/sync", DataSyncLive
   end
 
   # Other scopes may use custom stacks.
