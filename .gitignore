@@ -50,6 +50,7 @@ tls.*
 
 # local run scripts
 run*.sh
+deploy*.sh
 
 # temp files
 _attic/
