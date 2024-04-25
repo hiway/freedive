@@ -22,7 +22,7 @@ defmodule Freedive.Application do
       # Start system supervisor
       {Freedive.NodeSupervisor, [pubsub: Freedive.PubSub]},
       # Start the Telemetry collector
-      {Mobius, metrics: metrics(), persistence_dir: "priv/metrics", autosave_interval: 60},
+      {Mobius, metrics: metrics(), persistence_dir: mobius_dir(), autosave_interval: 60},
       # Start to serve requests, typically the last entry
       FreediveWeb.Endpoint
     ]
@@ -50,6 +50,10 @@ defmodule Freedive.Application do
     [
       Telemetry.Metrics.last_value("vm.memory.total", unit: {:byte, :kilobyte})
     ]
+  end
+
+  defp mobius_dir() do
+    Application.get_env(:freedive, :mobius_dir) || Application.app_dir(:freedive, "priv/mobius")
   end
 
   defp topologies() do

@@ -70,6 +70,8 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :freedive, mobius_dir: System.get_env("MOBIUS_DIR") || "/var/db/freedive/mobius"
+
   # ## Configuring the mailer
   #
   # In production you need to configure the mailer to use a different adapter.

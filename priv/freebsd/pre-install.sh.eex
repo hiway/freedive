@@ -19,6 +19,21 @@ ensure_user() {
     fi
 }
 
+ensure_dir() {
+    dir="$1"
+    owner="$2"
+    group="$3"
+
+    if [ ! -d "$dir" ]; then
+        echo "Creating directory '$dir'."
+        mkdir -p "$dir"
+    fi
+
+    chown $owner:$group "$dir"
+}
+
 <%= if @user != "root" do %>
 ensure_user "<%= @user %>" "<%= @user %>"
 <% end %>
+
+ensure_dir "<%= @data_dir %>/mobius" "<%= @user %>" "<%= @group %>"
