@@ -37,6 +37,12 @@ defmodule FreediveWeb.Router do
     live "/data/remote", DataRemoteLive
     live "/data/share", DataShareLive
     live "/data/sync", DataSyncLive
+
+    live "/compute/apps", ComputeAppsLive
+    live "/compute/services", ComputeServicesLive
+    live "/compute/functions", ComputeFunctionsLive
+    live "/compute/tasks", ComputeTasksLive
+
   end
 
   # Other scopes may use custom stacks.

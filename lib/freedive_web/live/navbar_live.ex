@@ -116,18 +116,18 @@ defmodule FreediveWeb.NavbarLive do
           </.navbar_dropdown>
 
           <.navbar_dropdown label="Compute">
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/compute/apps" class="navbar-item">
               <.icon name="hero-rocket-launch" class="mr-3" /> Apps
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/compute/services" class="navbar-item">
               <.icon name="hero-puzzle-piece" class="mr-3" /> Services
             </.link>
 
             <.navbar_divider />
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/compute/functions" class="navbar-item">
               <.icon name="hero-code-bracket" class="mr-3" /> Functions
             </.link>
-            <.link patch={FreediveWeb.HomeLive} class="navbar-item">
+            <.link href="/compute/tasks" class="navbar-item">
               <.icon name="hero-squares-2x2" class="mr-3" /> Tasks
             </.link>
           </.navbar_dropdown>
