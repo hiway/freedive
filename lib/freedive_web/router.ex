@@ -22,6 +22,9 @@ defmodule FreediveWeb.Router do
     live "/system/preferences", SystemPreferencesLive
     live "/system/secrets", SystemSecretsLive
     live "/system/security", SystemSecurityLive
+    live "/system/alerts", SystemAlertsLive
+    live "/system/logs", SystemLogsLive
+    live "/system/metrics", SystemMetricsLive
     live "/system/backups", SystemBackupsLive
     live "/system/updates", SystemUpdatesLive
 

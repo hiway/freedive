@@ -46,8 +46,19 @@ defmodule FreediveWeb.NavbarLive do
             </.link>
 
             <.navbar_divider />
+            <.navbar_item href="/system/alerts">
+              <.icon name="hero-bell-alert" class="mr-3" /> Alerts
+            </.navbar_item>
+            <.navbar_item href="/system/logs">
+              <.icon name="hero-newspaper" class="mr-3" /> Logs
+            </.navbar_item>
+            <.navbar_item href="/system/metrics">
+              <.icon name="hero-presentation-chart-bar" class="mr-3" /> Metrics
+            </.navbar_item>
+
+            <.navbar_divider />
             <.link href="/system/backups" class="navbar-item">
-              <.icon name="hero-folder-arrow-down" class="mr-3" /> Backups
+              <.icon name="hero-arrow-up-on-square-stack" class="mr-3" /> Backups
             </.link>
 
             <.navbar_divider />
@@ -134,7 +145,7 @@ defmodule FreediveWeb.NavbarLive do
         </.navbar_start>
 
         <.navbar_end>
-          <.navbar_dropdown label="Notifications" class="is-right">
+          <%!-- <.navbar_dropdown label="Observe" class="is-right">
             <.navbar_item href="#">
               <.icon name="hero-bell-alert" class="mr-3" /> Alerts
             </.navbar_item>
@@ -149,7 +160,7 @@ defmodule FreediveWeb.NavbarLive do
             <.navbar_item href="#">
               <.icon name="hero-arrows-pointing-out" class="mr-3" /> Channels
             </.navbar_item>
-          </.navbar_dropdown>
+          </.navbar_dropdown> --%>
 
           <.navbar_dropdown label="Account" class="is-right">
             <.navbar_item href="#">

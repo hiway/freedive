@@ -61,7 +61,9 @@ defmodule FreediveWeb.SystemSecretsLive do
         </div>
       </form>
       <p>
-        <.link class="has-text-danger">This secret might be exposed, change immediately.</.link>
+        <.link class="has-text-danger">This secret might be exposed.</.link>
+        <br />
+        <.link class="text-gray-500">Learn more on Have I Been Pwned</.link>
       </p>
     </.box>
     """
