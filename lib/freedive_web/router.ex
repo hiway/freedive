@@ -20,6 +20,7 @@ defmodule FreediveWeb.Router do
     live "/", HomeLive
 
     live "/system/preferences", SystemPreferencesLive
+    live "/system/services", SystemServicesLive
     live "/system/secrets", SystemSecretsLive
     live "/system/security", SystemSecurityLive
     live "/system/alerts", SystemAlertsLive

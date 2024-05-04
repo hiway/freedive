@@ -38,6 +38,11 @@ defmodule FreediveWeb.NavbarLive do
             </.link>
 
             <.navbar_divider />
+            <.link href="/system/services" class="navbar-item">
+              <.icon name="hero-puzzle-piece" class="mr-3" /> Services
+            </.link>
+
+            <.navbar_divider />
             <.link href="/system/secrets" class="navbar-item">
               <.icon name="hero-finger-print" class="mr-3" /> Secrets
             </.link>
