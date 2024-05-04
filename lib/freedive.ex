@@ -6,6 +6,7 @@ defmodule Freedive do
   Contexts are also responsible for managing your data, regardless
   if it comes from the database, an external API or others.
   """
+  require Logger
 
   @doas_path "/usr/local/bin/doas"
   @jexec_path "/usr/sbin/jexec"
@@ -136,6 +137,8 @@ defmodule Freedive do
   end
 
   defp cmd(command, args, opts) do
+    Logger.debug("Executing command: #{command} #{inspect(args)} with opts: #{inspect(opts)}")
+
     case System.cmd(command, args, opts) do
       {output, 0} -> {:ok, output |> String.trim()}
       {output, code} -> {:error, {output |> String.trim(), code}}
