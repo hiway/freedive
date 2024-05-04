@@ -12,9 +12,9 @@ if System.get_env("PHX_SERVER") do
   config :freedive, FreediveWeb.Endpoint, server: true
 end
 
-host = System.get_env("PHX_HOST") || "localhost"
-port = String.to_integer(System.get_env("PORT") || "4000")
+host = System.get_env("HOST") || "localhost"
 bind = System.get_env("BIND") || "127.0.0.1"
+port = String.to_integer(System.get_env("PORT") || "4000")
 ip = BindToIp.parse!(bind)
 
 if config_env() == :dev do
