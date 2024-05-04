@@ -436,12 +436,13 @@ defmodule FreediveWeb.Bulma do
   attr :icon, :string, required: true
   attr :icon_class, :string, default: nil
   attr :active, :string, default: "false"
+  attr :rest, :global
 
   slot :inner_block, required: true
 
   def panel_block(assigns) do
     ~H"""
-    <a class={["panel-block", append_is_active(@class, @active)]}>
+    <a class={["panel-block", append_is_active(@class, @active)]} {@rest}>
       <span class={["panel-icon mb-2", @icon_class]}>
         <.icon name={@icon} />
       </span>
