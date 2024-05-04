@@ -1,8 +1,46 @@
 # Freedive
 
-Dive into FreeBSD.
+Dive into FreeBSD
 
-> Status: Planning 
+Freedive turns your fresh, vanilla FreeBSD install into 
+a file server and an app host.
+
+> Status: Planning - features mentioned in this document might make it to v1.0, or they might not.
+
+# Features
+
+- [ ] System
+  - [ ] Preferences
+  - [ ] Packages
+  - [ ] Services
+  - [ ] Secrets
+  - [ ] Security
+  - [ ] Alerts
+  - [ ] Logs
+  - [ ] Metrics
+  - [ ] Backups
+  - [ ] Software update
+- [ ] Cluster
+  - [ ] Current node
+  - [ ] Connected nodes
+  - [ ] Manage nodes
+- [ ] Network
+  - [ ] Local
+  - [ ] Private
+  - [ ] Public
+  - [ ] Domains
+  - [ ] Endpoints
+- [ ] Data
+  - [ ] Local
+  - [ ] Remote
+  - [ ] Share
+  - [ ] Sync
+- [ ] Compute
+  - [ ] Apps
+  - [ ] Services
+  - [ ] Functions
+  - [ ] Tasks
+
 
 # Develop
 
