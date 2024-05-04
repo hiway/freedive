@@ -17,9 +17,11 @@ defmodule Freedive.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: Freedive.Finch},
       {Cluster.Supervisor, [topologies(), [name: Freedive.ClusterSupervisor]]},
+      # Start service supervisor
+      {Freedive.Api.Service.Supervisor, [pubsub_server: Freedive.PubSub]},
       # Start node tracker
       {Freedive.NodeTracker, [name: Freedive.NodeTracker, pubsub_server: Freedive.PubSub]},
-      # Start system supervisor
+      # Start node supervisor
       {Freedive.NodeSupervisor, [pubsub: Freedive.PubSub]},
       # Start the Telemetry collector
       {Mobius, metrics: metrics(), persistence_dir: mobius_dir(), autosave_interval: 60},
