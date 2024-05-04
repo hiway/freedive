@@ -25,21 +25,21 @@ defmodule Freedive.Api.Service.Cli do
   end
 
   def start_service(name, args \\ []) do
-    case service(name, "start", args) do
+    case service(name, "onestart", args) do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, _code}} -> {:error, stderr}
     end
   end
 
   def stop_service(name, args \\ []) do
-    case service(name, "stop", args) do
+    case service(name, "onestop", args) do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, _code}} -> {:error, stderr}
     end
   end
 
   def service_is_running?(name, args \\ []) do
-    case service(name, "status", args) do
+    case service(name, "onestatus", args) do
       {:ok, stdout} ->
         Logger.debug("service_is_running, stdout: #{inspect(stdout)}")
         true
