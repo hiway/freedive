@@ -68,7 +68,7 @@ defmodule Freedive.MixProject do
       {:mobius, "~> 0.6.1"},
       {:phx_config_util, "~> 0.1.0"},
       {:phx_tailwind_freebsd, "~> 0.2.1", runtime: Mix.env() == :dev},
-      {:mix_freebsd_pkg, path: "../mix_freebsd_pkg", runtime: Mix.env() == :dev}
+      {:mix_freebsd_pkg, github: "hiway/mix_freebsd_pkg", runtime: Mix.env() == :dev}
     ]
   end
 
