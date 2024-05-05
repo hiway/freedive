@@ -417,11 +417,14 @@ defmodule FreediveWeb.Bulma do
         <div class="panel-block">
           <p class="control has-icons-left">
             <input
+              id="search"
               class="input"
               type="text"
               placeholder="Search"
               value={@query}
               phx-keyup={@search_event}
+              phx-debounce="300"
+              autofocus="true"
             />
             <span class="icon is-left">
               <.icon name="hero-magnifying-glass" />
