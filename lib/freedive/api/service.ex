@@ -25,8 +25,8 @@ defmodule Freedive.Api.Service do
   end
 
   def service(name) do
-    {:ok, extra_commands} = extra_commands(name)
-    %{name: name, running: is_running?(name), extra_commands: extra_commands}
+    {:ok, commands} = list_commands(name)
+    %{name: name, running: is_running?(name), commands: commands}
   end
 
   def start(name, args \\ []) do
@@ -56,15 +56,15 @@ defmodule Freedive.Api.Service do
     end
   end
 
-  def command(name, command, args \\ []) do
-    case service_command(name, command, args) do
+  def run_command(name, command, args \\ []) do
+    case run_service_command(name, command, args) do
       {:ok, stdout} -> {:ok, stdout_to_log(stdout)}
       {:error, stderr} -> {:error, stderr_to_log(stderr)}
     end
   end
 
-  def extra_commands(name, args \\ []) do
-    case service_extra_commands(name, args) do
+  def list_commands(name, args \\ []) do
+    case list_service_commands(name, args) do
       {:ok, commands} -> {:ok, commands}
       {:error, stderr} -> {:error, stderr}
     end

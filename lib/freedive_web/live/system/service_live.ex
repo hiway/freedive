@@ -60,8 +60,8 @@ defmodule FreediveWeb.SystemServicesLive do
                 </button>
               <% end %>
 
-              <%= if @selected_service.extra_commands != [] do %>
-                <%= for command <- @selected_service.extra_commands do %>
+              <%= if @selected_service.commands != [] do %>
+                <%= for command <- @selected_service.commands do %>
                   <button
                     class="button is-info is-small"
                     phx-click="command"
@@ -171,7 +171,7 @@ defmodule FreediveWeb.SystemServicesLive do
   def handle_event("command", %{"command" => command, "name" => name}, socket) do
     Logger.debug("Executing command '#{command}' for service: #{name}")
 
-    case Service.command(name, "one" <> command) do
+    case Service.run_command(name, "one" <> command) do
       {:ok, stdout} ->
         selected_log = [{:ok, stdout} | socket.assigns.selected_log]
 

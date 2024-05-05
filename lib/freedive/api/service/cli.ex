@@ -39,14 +39,14 @@ defmodule Freedive.Api.Service.Cli do
     end
   end
 
-  def service_command(name, command, args \\ []) do
+  def run_service_command(name, command, args \\ []) do
     case service(name, command, args) do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, _code}} -> {:error, stderr}
     end
   end
 
-  def service_extra_commands(name, args \\ []) do
+  def list_service_commands(name, args \\ []) do
     case service(name, "oneextracommands", args) do
       {:ok, stdout} ->
         {:ok, stdout |> String.split(" ") |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))}
