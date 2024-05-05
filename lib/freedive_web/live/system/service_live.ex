@@ -16,8 +16,7 @@ defmodule FreediveWeb.SystemServicesLive do
       |> assign(filter: "running")
       |> assign(filtered_services: services)
       |> assign(filtered_count: nil)
-      |> assign(selected_name: nil)
-      |> assign(selected_service: nil)
+      |> assign(selected: nil)
       |> assign(selected_log: nil)
       |> assign(services: services)
       |> assign(show_details: false)
@@ -27,7 +26,7 @@ defmodule FreediveWeb.SystemServicesLive do
 
   def render(assigns) do
     ~H"""
-    <nav class="panel" class={if @selected_name != nil, do: "hidden"}>
+    <nav class="panel" class={if @selected != nil, do: "hidden"}>
       <p class="panel-heading">
         System Services
       </p>
@@ -76,7 +75,7 @@ defmodule FreediveWeb.SystemServicesLive do
             icon="hero-puzzle-piece"
             phx-click="select"
             phx-value-name={service.name}
-            class={if @selected_name == service.name, do: "has-background-gray-light"}
+            class={if @selected && Map.get(@selected, "name") == service.name, do: "has-background-gray-light"}
           >
             <span class="mr-4 text-lg">
               <%= service.name %>
@@ -101,37 +100,37 @@ defmodule FreediveWeb.SystemServicesLive do
         <.panel_block
           icon="hero-arrow-left"
           phx-click="select"
-          phx-value-name={@selected_name}
+          phx-value-name={@selected.name}
           class="has-background-gray-light text-lg"
         >
-          Service: <%= @selected_name %>
+          Service: <%= @selected.name %>
         </.panel_block>
 
         <.panel_block
-          icon={if @selected_service.running, do: "hero-check-circle", else: "hero-minus-circle"}
+          icon={if @selected.running, do: "hero-check-circle", else: "hero-minus-circle"}
           class="text-lg"
         >
           <div>
             <span class="">
-              <%= if @selected_service.running do %>
-                <button class="button is-warning" phx-click="restart" phx-value-name={@selected_name}>
+              <%= if @selected.running do %>
+                <button class="button is-warning" phx-click="restart" phx-value-name={@selected.name}>
                   Restart
                 </button>
-                <button class="button is-danger" phx-click="stop" phx-value-name={@selected_name}>
+                <button class="button is-danger" phx-click="stop" phx-value-name={@selected.name}>
                   Stop
                 </button>
               <% else %>
-                <button class="button is-success" phx-click="start" phx-value-name={@selected_name}>
+                <button class="button is-success" phx-click="start" phx-value-name={@selected.name}>
                   Start
                 </button>
               <% end %>
 
-              <%= if @selected_service.commands != [] do %>
-                <%= for command <- @selected_service.commands do %>
+              <%= if @selected.commands != [] do %>
+                <%= for command <- @selected.commands do %>
                   <button
                     class="button is-info"
                     phx-click="command"
-                    phx-value-name={@selected_name}
+                    phx-value-name={@selected.name}
                     phx-value-command={command}
                   >
                     <%= command %>
@@ -190,8 +189,7 @@ defmodule FreediveWeb.SystemServicesLive do
        filter: filter,
        filtered_services: filtered_services,
        filtered_count: length(filtered_services),
-       selected_name: nil,
-       selected_service: nil,
+       selected: nil,
        selected_log: nil,
        show_details: false
      )}
@@ -208,8 +206,7 @@ defmodule FreediveWeb.SystemServicesLive do
          filter: "all",
          filtered_services: filtered_services,
          filtered_count: length(filtered_services),
-         selected_name: hd(filtered_services).name,
-         selected_service: Service.service(hd(filtered_services).name),
+         selected: Service.service(hd(filtered_services).name),
          selected_log: [],
          show_details: true
        )}
@@ -220,8 +217,7 @@ defmodule FreediveWeb.SystemServicesLive do
          filter: "all",
          filtered_services: filtered_services,
          filtered_count: length(filtered_services),
-         selected_name: nil,
-         selected_service: nil,
+         selected: nil,
          selected_log: nil,
          show_details: false
        )}
@@ -231,7 +227,7 @@ defmodule FreediveWeb.SystemServicesLive do
   def handle_event("select", %{"name" => service_name}, socket) do
     Logger.debug("Selected service: #{service_name}")
 
-    if socket.assigns.selected_name == service_name do
+    if socket.assigns.selected.name == service_name do
       if socket.assigns.show_details do
         {:noreply, assign(socket, show_details: false)}
       else
@@ -240,8 +236,7 @@ defmodule FreediveWeb.SystemServicesLive do
     else
       {:noreply,
        assign(socket,
-         selected_name: service_name,
-         selected_service: Service.service(service_name),
+         selected: Service.service(service_name),
          selected_log: []
        )}
     end
@@ -257,7 +252,7 @@ defmodule FreediveWeb.SystemServicesLive do
 
         {:noreply,
          assign(socket,
-           selected_service: Service.service(service_name),
+           selected: Service.service(service_name),
            selected_log: selected_log
          )}
 
@@ -278,7 +273,7 @@ defmodule FreediveWeb.SystemServicesLive do
 
         {:noreply,
          assign(socket,
-           selected_service: Service.service(service_name),
+           selected: Service.service(service_name),
            selected_log: selected_log
          )}
 
@@ -299,7 +294,7 @@ defmodule FreediveWeb.SystemServicesLive do
 
         {:noreply,
          assign(socket,
-           selected_service: Service.service(service_name),
+           selected: Service.service(service_name),
            selected_log: selected_log
          )}
 
@@ -319,7 +314,7 @@ defmodule FreediveWeb.SystemServicesLive do
 
         {:noreply,
          assign(socket,
-           selected_service: Service.service(service_name),
+           selected: Service.service(service_name),
            selected_log: selected_log
          )}
 
