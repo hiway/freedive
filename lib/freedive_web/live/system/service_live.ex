@@ -12,13 +12,14 @@ defmodule FreediveWeb.SystemServicesLive do
       |> assign(selected_name: nil)
       |> assign(selected_service: nil)
       |> assign(selected_log: nil)
+      |> assign(query: nil)
 
     {:ok, socket}
   end
 
   def render(assigns) do
     ~H"""
-    <.panel search="true">
+    <.panel search="true" query={@query}>
       <:heading>
         System Services
       </:heading>
@@ -29,7 +30,7 @@ defmodule FreediveWeb.SystemServicesLive do
         <.link href="#">Enabled</.link>
       </:tabs>
 
-      <%= for service <- @services do %>
+      <%= for service <- filter(@services, @query) do %>
         <.panel_block
           icon="hero-puzzle-piece"
           phx-click="select"
@@ -84,6 +85,11 @@ defmodule FreediveWeb.SystemServicesLive do
       <% end %>
     </.panel>
     """
+  end
+
+  def handle_event("search", %{"value" => query}, socket) do
+    Logger.debug("Searching for: #{query}")
+    {:noreply, assign(socket, query: query)}
   end
 
   def handle_event("start", %{"name" => service_name}, socket) do
@@ -161,6 +167,14 @@ defmodule FreediveWeb.SystemServicesLive do
          selected_service: Service.service(service_name),
          selected_log: []
        )}
+    end
+  end
+
+  defp filter(services, query) do
+    case query do
+      nil -> services
+      "" -> services
+      _ -> Enum.filter(services, &String.contains?(&1, query))
     end
   end
 end

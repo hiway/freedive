@@ -400,6 +400,8 @@ defmodule FreediveWeb.Bulma do
   """
   attr :class, :string, default: nil
   attr :search, :string, default: nil
+  attr :query, :string, default: nil
+  attr :search_event, :string, default: "search"
 
   slot :heading, required: true
   slot :tabs, required: false
@@ -414,7 +416,13 @@ defmodule FreediveWeb.Bulma do
       <%= if @search == "true" do %>
         <div class="panel-block">
           <p class="control has-icons-left">
-            <input class="input" type="text" placeholder="Search" />
+            <input
+              class="input"
+              type="text"
+              placeholder="Search"
+              value={@query}
+              phx-keyup={@search_event}
+            />
             <span class="icon is-left">
               <.icon name="hero-magnifying-glass" />
             </span>
