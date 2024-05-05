@@ -82,12 +82,16 @@ defmodule FreediveWeb.SystemServicesLive do
               <%= service.name %>
             </span>
 
-            <%= if @selected_name == service.name do %>
-              <%= if @selected_service.running do %>
-                <span class="tag is-success">Running</span>
-              <% else %>
-                <span class="tag is-danger">Stopped</span>
-              <% end %>
+            <%= if service.running do %>
+              <span class="tag is-info">Running</span>
+            <% else %>
+              <span class="tag is-gray">Stopped</span>
+            <% end %>
+
+            <%= if service.enabled do %>
+              <span class="tag is-success">Enabled</span>
+            <% else %>
+              <span class="tag is-gray">Disabled</span>
             <% end %>
           </.panel_block>
         <% end %>
