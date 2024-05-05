@@ -75,7 +75,10 @@ defmodule FreediveWeb.SystemServicesLive do
             icon="hero-puzzle-piece"
             phx-click="select"
             phx-value-name={service.name}
-            class={if @selected && Map.get(@selected, "name") == service.name, do: "has-background-gray-light"}
+            class={
+              if @selected && Map.get(@selected, "name") == service.name,
+                do: "has-background-gray-light"
+            }
           >
             <span class="mr-4 text-lg">
               <%= service.name %>
@@ -227,7 +230,7 @@ defmodule FreediveWeb.SystemServicesLive do
   def handle_event("select", %{"name" => service_name}, socket) do
     Logger.debug("Selected service: #{service_name}")
 
-    if socket.assigns.selected.name == service_name do
+    if socket.assigns.selected && socket.assigns.selected.name == service_name do
       if socket.assigns.show_details do
         {:noreply, assign(socket, show_details: false)}
       else
@@ -325,9 +328,60 @@ defmodule FreediveWeb.SystemServicesLive do
     end
   end
 
-  def handle_info({"host:service:" <> event, payload}, socket) do
+  def handle_info({"host:service:" <> event, {:error, log}}, socket) do
+    Logger.error("Received service event: #{inspect(event)} with log: #{inspect(log)}")
+    service_name = Map.get(log, :name)
+    services = socket.assigns.services
+
+    case event do
+      "stopped" ->
+        services =
+          Enum.map(services, fn service ->
+            if service.name == service_name do
+              Logger.warning("Service #{service_name} is not running")
+              %{service | running: false}
+            else
+              service
+            end
+          end)
+
+        {:noreply,
+         assign(socket,
+           services: services,
+           filtered_services: filter(services, socket.assigns.query)
+         )}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
+  def handle_info({"host:service:" <> event, {:ok, payload}}, socket) do
     Logger.debug("Received service event: #{inspect(event)} with payload: #{inspect(payload)}")
-    {:noreply, socket}
+    service_name = Map.get(payload, :name)
+    services = socket.assigns.services
+
+    case event do
+      "running" ->
+        services =
+          Enum.map(services, fn service ->
+            if service.name == service_name do
+              Logger.warning("Service #{service_name} is running")
+              %{service | running: true}
+            else
+              service
+            end
+          end)
+
+        {:noreply,
+         assign(socket,
+           services: services,
+           filtered_services: filter(services, socket.assigns.query)
+         )}
+
+      _ ->
+        {:noreply, socket}
+    end
   end
 
   defp filter(services, query) do
