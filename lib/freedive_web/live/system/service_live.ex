@@ -4,6 +4,10 @@ defmodule FreediveWeb.SystemServicesLive do
   alias Freedive.Api.Service
 
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Service.subscribe()
+    end
+
     {:ok, services} = Service.list()
 
     socket =
@@ -201,6 +205,11 @@ defmodule FreediveWeb.SystemServicesLive do
          selected_log: []
        )}
     end
+  end
+
+  def handle_info({"host:service:" <> event, payload}, socket) do
+    Logger.debug("Received service event: #{inspect(event)} with payload: #{inspect(payload)}")
+    {:noreply, socket}
   end
 
   defp filter(services, query) do

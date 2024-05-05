@@ -6,6 +6,11 @@ defmodule Freedive.Api.Service.Cli do
   import Freedive
 
   @service_bin "/usr/sbin/service"
+  @topic "host:service"
+
+  def topic do
+    @topic
+  end
 
   def list_services() do
     case execute(@service_bin, ["-l"]) do
@@ -18,40 +23,78 @@ defmodule Freedive.Api.Service.Cli do
             &Enum.member?(["DAEMON", "FILESYSTEMS", "LOGIN", "NETWORKING", "SERVERS"], &1)
           )
 
+        Logger.debug("list_services, services: #{inspect(service_names)}")
         {:ok, service_names}
 
       {:error, {stderr, _code}} ->
+        Logger.error("list_services, log: #{inspect(stderr)}")
         {:error, stderr}
     end
   end
 
   def start_service(name, args \\ []) do
     case service(name, "onestart", args) do
-      {:ok, stdout} -> {:ok, stdout}
-      {:error, {stderr, _code}} -> {:error, stderr}
+      {:ok, stdout} ->
+        Logger.debug("start_service, log: #{inspect(stdout)}")
+        broadcast("start", {:ok, %{name: name, args: args, log: stdout}})
+        {:ok, stdout}
+
+      {:error, {stderr, _code}} ->
+        Logger.error("start_service, log: #{inspect(stderr)}")
+        broadcast("start", {:error, %{name: name, args: args, log: stderr}})
+        {:error, stderr}
     end
   end
 
   def stop_service(name, args \\ []) do
     case service(name, "onestop", args) do
-      {:ok, stdout} -> {:ok, stdout}
-      {:error, {stderr, _code}} -> {:error, stderr}
+      {:ok, stdout} ->
+        Logger.debug("stop_service, log: #{inspect(stdout)}")
+        broadcast("stop", {:ok, %{name: name, args: args, log: stdout}})
+        {:ok, stdout}
+
+      {:error, {stderr, _code}} ->
+        Logger.error("stop_service, log: #{inspect(stderr)}")
+        broadcast("stop", {:error, %{name: name, args: args, log: stderr}})
+        {:error, stderr}
     end
   end
 
   def run_service_command(name, command, args \\ []) do
     case service(name, command, args) do
-      {:ok, stdout} -> {:ok, stdout}
-      {:error, {stderr, _code}} -> {:error, stderr}
+      {:ok, stdout} ->
+        stdout = String.trim(stdout)
+
+        stdout =
+          if stdout == "" do
+            "service #{name} #{command}"
+          else
+            stdout
+          end
+
+        Logger.debug("run_service_command, log: #{inspect(stdout)}")
+        broadcast("command", {:ok, %{name: name, command: command, args: args, log: stdout}})
+        {:ok, stdout}
+
+      {:error, {stderr, _code}} ->
+        Logger.error("run_service_command, log: #{inspect(stderr)}")
+        broadcast("command", {:error, %{name: name, command: command, args: args, log: stderr}})
+        {:error, stderr}
     end
   end
 
   def list_service_commands(name, args \\ []) do
     case service(name, "oneextracommands", args) do
       {:ok, stdout} ->
-        {:ok, stdout |> String.split(" ") |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))}
+        service_names =
+          stdout |> String.split(" ") |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))
+
+        Logger.debug("list_service_commands, commands: #{inspect(service_names)}")
+
+        {:ok, service_names}
 
       {:error, {stderr, _code}} ->
+        Logger.error("list_service_commands, log: #{inspect(stderr)}")
         {:error, stderr}
     end
   end
@@ -60,23 +103,24 @@ defmodule Freedive.Api.Service.Cli do
     case service(name, "onestatus", args) do
       {:ok, stdout} ->
         Logger.debug("service_is_running, stdout: #{inspect(stdout)}")
+        broadcast("running", {:ok, %{name: name, args: args, log: stdout}})
         true
 
       {:error, {stderr, _code}} ->
-        if String.contains?(stderr, "is not running") do
-          Logger.debug("service_is_running, stderr: #{inspect(stderr)}")
-          false
-        else
-          Logger.error("service_is_running, stderr: #{inspect(stderr)}")
-          false
-        end
+        Logger.debug("service_is_running, stderr: #{inspect(stderr)}")
+        broadcast("stopped", {:error, %{name: name, args: args, log: stderr}})
+        false
     end
   end
 
-  def service(name, action, args) do
+  defp service(name, action, args) do
     case execute(@service_bin, [name, action] ++ args, doas: true) do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, code}} -> {:error, {stderr, code}}
     end
+  end
+
+  defp broadcast(event, payload) do
+    Phoenix.PubSub.broadcast(Freedive.PubSub, @topic, {@topic <> ":" <> event, payload})
   end
 end

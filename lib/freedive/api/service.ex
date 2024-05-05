@@ -3,7 +3,7 @@ defmodule Freedive.Api.Service do
   Monitor and manage services running on host.
   """
   import Freedive.Api.Service.Cli
-  @topic "host:services"
+  @topic "host:service"
 
   def topic do
     @topic
@@ -26,8 +26,11 @@ defmodule Freedive.Api.Service do
 
   def service(name) do
     case list_commands(name) do
-      {:ok, commands} -> %{name: name, running: is_running?(name), commands: commands}
-      {:error, stderr} -> %{name: name, running: is_running?(name), commands: [], error: stderr}
+      {:ok, commands} ->
+        %{name: name, running: is_running?(name), commands: commands}
+
+      {:error, stderr} ->
+        %{name: name, running: is_running?(name), commands: [], error: stderr}
     end
   end
 
