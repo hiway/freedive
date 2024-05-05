@@ -120,7 +120,7 @@ defmodule FreediveWeb.SystemServicesLive do
          )}
 
       {:error, stderr} ->
-        Logger.error("Service start error: #{stderr}")
+        Logger.error("Service #{service_name} start error: #{stderr}")
         selected_log = [{:error, stderr} | socket.assigns.selected_log]
         {:noreply, assign(socket, selected_log: selected_log)}
     end
@@ -141,7 +141,7 @@ defmodule FreediveWeb.SystemServicesLive do
          )}
 
       {:error, stderr} ->
-        Logger.error("Service stop error: #{stderr}")
+        Logger.error("Service #{service_name} stop error: #{stderr}")
         selected_log = [{:error, stderr} | socket.assigns.selected_log]
         {:noreply, assign(socket, selected_log: selected_log)}
     end
@@ -162,27 +162,27 @@ defmodule FreediveWeb.SystemServicesLive do
          )}
 
       {:error, stderr} ->
-        Logger.error("Service restart error: #{stderr}")
+        Logger.error("Service #{service_name} restart error: #{stderr}")
         selected_log = [{:error, stderr} | socket.assigns.selected_log]
         {:noreply, assign(socket, selected_log: selected_log)}
     end
   end
 
-  def handle_event("command", %{"command" => command, "name" => name}, socket) do
-    Logger.debug("Executing command '#{command}' for service: #{name}")
+  def handle_event("command", %{"command" => command, "name" => service_name}, socket) do
+    Logger.debug("Executing command '#{command}' for service: #{service_name}")
 
-    case Service.run_command(name, "one" <> command) do
+    case Service.run_command(service_name, "one" <> command) do
       {:ok, stdout} ->
         selected_log = [{:ok, stdout} | socket.assigns.selected_log]
 
         {:noreply,
          assign(socket,
-           selected_service: Service.service(name),
+           selected_service: Service.service(service_name),
            selected_log: selected_log
          )}
 
       {:error, stderr} ->
-        Logger.error("Command error: #{stderr}")
+        Logger.error("Service #{service_name} #{command} error: #{stderr}")
         selected_log = [{:error, stderr} | socket.assigns.selected_log]
         {:noreply, assign(socket, selected_log: selected_log)}
     end
