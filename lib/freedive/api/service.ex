@@ -25,8 +25,10 @@ defmodule Freedive.Api.Service do
   end
 
   def service(name) do
-    {:ok, commands} = list_commands(name)
-    %{name: name, running: is_running?(name), commands: commands}
+    case list_commands(name) do
+      {:ok, commands} -> %{name: name, running: is_running?(name), commands: commands}
+      {:error, stderr} -> %{name: name, running: is_running?(name), commands: [], error: stderr}
+    end
   end
 
   def start(name, args \\ []) do
