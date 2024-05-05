@@ -60,6 +60,19 @@ defmodule FreediveWeb.SystemServicesLive do
                 </button>
               <% end %>
 
+              <%= if @selected_service.extra_commands != [] do %>
+                <%= for command <- @selected_service.extra_commands do %>
+                  <button
+                    class="button is-info is-small"
+                    phx-click="command"
+                    phx-value-name={service}
+                    phx-value-command={command}
+                  >
+                    <%= command %>
+                  </button>
+                <% end %>
+              <% end %>
+
               <%= if @selected_log != nil and @selected_log != [] do %>
                 <ul class="mt-4">
                   <%= for {status, log} <- @selected_log do %>
@@ -150,6 +163,27 @@ defmodule FreediveWeb.SystemServicesLive do
 
       {:error, stderr} ->
         Logger.error("Service restart error: #{stderr}")
+        selected_log = [{:error, stderr} | socket.assigns.selected_log]
+        {:noreply, assign(socket, selected_log: selected_log)}
+    end
+  end
+
+  def handle_event("command", %{"command" => command, "name" => name}, socket) do
+    Logger.debug("Executing command '#{command}' for service: #{name}")
+
+    case Service.command(name, "one" <> command) do
+      {:ok, stdout} ->
+        Logger.debug("Command executed: #{command}")
+        selected_log = [{:ok, stdout} | socket.assigns.selected_log]
+
+        {:noreply,
+         assign(socket,
+           selected_service: Service.service(name),
+           selected_log: selected_log
+         )}
+
+      {:error, stderr} ->
+        Logger.error("Command error: #{stderr}")
         selected_log = [{:error, stderr} | socket.assigns.selected_log]
         {:noreply, assign(socket, selected_log: selected_log)}
     end

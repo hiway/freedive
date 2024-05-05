@@ -20,7 +20,8 @@ defmodule Freedive.Api.Service.Cli do
 
         {:ok, service_names}
 
-      {:error, {stderr, _code}} -> {:error, stderr}
+      {:error, {stderr, _code}} ->
+        {:error, stderr}
     end
   end
 
@@ -35,6 +36,16 @@ defmodule Freedive.Api.Service.Cli do
     case service(name, "onestop", args) do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, _code}} -> {:error, stderr}
+    end
+  end
+
+  def service_extra_commands(name, args \\ []) do
+    case service(name, "oneextracommands", args) do
+      {:ok, stdout} ->
+        {:ok, stdout |> String.split(" ") |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))}
+
+      {:error, {stderr, _code}} ->
+        {:error, stderr}
     end
   end
 
@@ -55,7 +66,7 @@ defmodule Freedive.Api.Service.Cli do
     end
   end
 
-  defp service(name, action, args) do
+  def service(name, action, args) do
     case execute(@service_bin, [name, action] ++ args, doas: true) do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, code}} -> {:error, {stderr, code}}
