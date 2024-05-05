@@ -173,7 +173,6 @@ defmodule FreediveWeb.SystemServicesLive do
 
     case Service.command(name, "one" <> command) do
       {:ok, stdout} ->
-        Logger.debug("Command executed: #{command}")
         selected_log = [{:ok, stdout} | socket.assigns.selected_log]
 
         {:noreply,

@@ -57,7 +57,7 @@ defmodule Freedive.Api.Service do
   end
 
   def command(name, command, args \\ []) do
-    case service(name, command, args) do
+    case service_command(name, command, args) do
       {:ok, stdout} -> {:ok, stdout_to_log(stdout)}
       {:error, stderr} -> {:error, stderr_to_log(stderr)}
     end

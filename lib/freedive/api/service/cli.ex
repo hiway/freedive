@@ -39,6 +39,13 @@ defmodule Freedive.Api.Service.Cli do
     end
   end
 
+  def service_command(name, command, args \\ []) do
+    case service(name, command, args) do
+      {:ok, stdout} -> {:ok, stdout}
+      {:error, {stderr, _code}} -> {:error, stderr}
+    end
+  end
+
   def service_extra_commands(name, args \\ []) do
     case service(name, "oneextracommands", args) do
       {:ok, stdout} ->
