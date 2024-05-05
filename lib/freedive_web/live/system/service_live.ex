@@ -201,22 +201,24 @@ defmodule FreediveWeb.SystemServicesLive do
       {:noreply,
        assign(socket,
          query: query,
+         filter: "all",
          filtered_services: filtered_services,
-         selected_name: hd(filtered_services),
-         selected_service: Service.service(hd(filtered_services)),
-         selected_log: [],
          filtered_count: length(filtered_services),
+         selected_name: hd(filtered_services).name,
+         selected_service: Service.service(hd(filtered_services).name),
+         selected_log: [],
          show_details: true
        )}
     else
       {:noreply,
        assign(socket,
          query: query,
+         filter: "all",
          filtered_services: filtered_services,
+         filtered_count: length(filtered_services),
          selected_name: nil,
          selected_service: nil,
          selected_log: nil,
-         filtered_count: length(filtered_services),
          show_details: false
        )}
     end
