@@ -13,6 +13,7 @@ defmodule FreediveWeb.SystemServicesLive do
     socket =
       socket
       |> assign(query: nil)
+      |> assign(filter: "running")
       |> assign(filtered_services: services)
       |> assign(filtered_count: nil)
       |> assign(selected_name: nil)
@@ -50,26 +51,38 @@ defmodule FreediveWeb.SystemServicesLive do
       </div>
 
       <%= if @show_details == false do %>
-        <%= if @filtered_count == nil or @filtered_count > 1 do %>
-          <p class="panel-tabs">
-            <.link href="#" class="is-active">All</.link>
-            <.link href="#">Running</.link>
-            <.link href="#">Enabled</.link>
-          </p>
-        <% end %>
+        <p class="panel-tabs">
+          <.link phx-click="filter" phx-value-name="all" class={if @filter == "all", do: "is-active"}>
+            All
+          </.link>
+          <.link
+            phx-click="filter"
+            phx-value-name="running"
+            class={if @filter == "running", do: "is-active"}
+          >
+            Running
+          </.link>
+          <.link
+            phx-click="filter"
+            phx-value-name="enabled"
+            class={if @filter == "enabled", do: "is-active"}
+          >
+            Enabled
+          </.link>
+        </p>
 
         <%= for service <- @filtered_services do %>
           <.panel_block
             icon="hero-puzzle-piece"
             phx-click="select"
-            phx-value-name={service}
-            class={if @selected_name == service, do: "has-background-gray-light"}
+            phx-value-name={service.name}
+            class={if @selected_name == service.name, do: "has-background-gray-light"}
           >
             <span class="mr-4 text-lg">
-              <%= service %>
+              <%= service.name %>
             </span>
 
-            <%= if @selected_name == service do %>
+            <%= if @selected_name == service.name do %>
               <%= if @selected_service.running do %>
                 <span class="tag is-success">Running</span>
               <% else %>
@@ -78,7 +91,9 @@ defmodule FreediveWeb.SystemServicesLive do
             <% end %>
           </.panel_block>
         <% end %>
+        <%!--  --%>
       <% else %>
+        <%!--  --%>
         <.panel_block
           icon="hero-arrow-left"
           phx-click="select"
@@ -147,6 +162,35 @@ defmodule FreediveWeb.SystemServicesLive do
       <% end %>
     </nav>
     """
+  end
+
+  def handle_event("filter", %{"name" => filter}, socket) do
+    Logger.debug("Filtering services: #{filter}")
+
+    searched_services = filter(socket.assigns.services, socket.assigns.query)
+
+    filtered_services =
+      case filter do
+        "all" ->
+          searched_services
+
+        "running" ->
+          Enum.filter(searched_services, & &1.running)
+
+        "enabled" ->
+          Enum.filter(searched_services, & &1.enabled)
+      end
+
+    {:noreply,
+     assign(socket,
+       filter: filter,
+       filtered_services: filtered_services,
+       filtered_count: length(filtered_services),
+       selected_name: nil,
+       selected_service: nil,
+       selected_log: nil,
+       show_details: false
+     )}
   end
 
   def handle_event("search", %{"value" => query}, socket) do
@@ -289,7 +333,7 @@ defmodule FreediveWeb.SystemServicesLive do
     case query do
       nil -> services
       "" -> services
-      _ -> Enum.filter(services, &String.contains?(&1, query))
+      _ -> Enum.filter(services, &String.contains?(&1.name, query))
     end
   end
 end

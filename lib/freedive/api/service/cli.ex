@@ -23,8 +23,39 @@ defmodule Freedive.Api.Service.Cli do
             &Enum.member?(["DAEMON", "FILESYSTEMS", "LOGIN", "NETWORKING", "SERVERS"], &1)
           )
 
-        Logger.debug("list_services, services: #{inspect(service_names)}")
-        {:ok, service_names}
+        case execute(@service_bin, ["-e"]) do
+          {:ok, stdout} ->
+            enabled_service_names =
+              stdout
+              |> String.split("\n")
+              |> Enum.map(&String.trim/1)
+              |> Enum.map(&Path.basename/1)
+              |> Enum.into(%{}, &{&1, true})
+
+            services =
+              service_names
+              |> Enum.map(fn name ->
+                %{
+                  name: name,
+                  enabled: Map.has_key?(enabled_service_names, name),
+                  running:
+                    if Map.has_key?(enabled_service_names, name) do
+                      service_is_running?(name)
+                    else
+                      nil
+                    end,
+                  description: "",
+                  commands: [],
+                  rcvars: []
+                }
+              end)
+
+            {:ok, services}
+
+          {:error, {stderr, _code}} ->
+            Logger.error("list_services enabled, log: #{inspect(stderr)}")
+            {:error, stderr}
+        end
 
       {:error, {stderr, _code}} ->
         Logger.error("list_services, log: #{inspect(stderr)}")

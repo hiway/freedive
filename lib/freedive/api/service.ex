@@ -19,7 +19,7 @@ defmodule Freedive.Api.Service do
 
   def list() do
     case list_services() do
-      {:ok, service_names} -> {:ok, service_names}
+      {:ok, services} -> {:ok, services}
       {:error, stderr} -> {:error, stderr}
     end
   end
