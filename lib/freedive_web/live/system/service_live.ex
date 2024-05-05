@@ -12,54 +12,97 @@ defmodule FreediveWeb.SystemServicesLive do
 
     socket =
       socket
-      |> assign(services: services)
+      |> assign(query: nil)
+      |> assign(filtered_services: services)
+      |> assign(filtered_count: nil)
       |> assign(selected_name: nil)
       |> assign(selected_service: nil)
       |> assign(selected_log: nil)
-      |> assign(query: nil)
+      |> assign(services: services)
+      |> assign(show_details: false)
 
     {:ok, socket}
   end
 
   def render(assigns) do
     ~H"""
-    <.panel search="true" query={@query}>
-      <:heading>
+    <nav class="panel" class={if @selected_name != nil, do: "hidden"}>
+      <p class="panel-heading">
         System Services
-      </:heading>
+      </p>
 
-      <:tabs>
-        <.link href="#" class="is-active">All</.link>
-        <.link href="#">Running</.link>
-        <.link href="#">Enabled</.link>
-      </:tabs>
-
-      <%= for service <- filter(@services, @query) do %>
-        <.panel_block
-          icon="hero-puzzle-piece"
-          phx-click="select"
-          phx-value-name={service}
-          class={if @selected_name == service, do: "has-background-gray-light"}
-        >
-          <span class="mr-4 text-lg">
-            <%= service %>
+      <div class="panel-block">
+        <p class="control has-icons-left">
+          <input
+            id="search"
+            class="input"
+            type="text"
+            placeholder="Search"
+            value={@query}
+            phx-keyup="search"
+            phx-debounce="300"
+            autofocus="true"
+          />
+          <span class="icon is-left">
+            <.icon name="hero-magnifying-glass" />
           </span>
+        </p>
+      </div>
 
-          <%= if @selected_name == service do %>
-            <span>
+      <%= if @show_details == false do %>
+        <%= if @filtered_count == nil or @filtered_count > 1 do %>
+          <p class="panel-tabs">
+            <.link href="#" class="is-active">All</.link>
+            <.link href="#">Running</.link>
+            <.link href="#">Enabled</.link>
+          </p>
+        <% end %>
+
+        <%= for service <- @filtered_services do %>
+          <.panel_block
+            icon="hero-puzzle-piece"
+            phx-click="select"
+            phx-value-name={service}
+            class={if @selected_name == service, do: "has-background-gray-light"}
+          >
+            <span class="mr-4 text-lg">
+              <%= service %>
+            </span>
+
+            <%= if @selected_name == service do %>
               <%= if @selected_service.running do %>
-                <button
-                  class="button is-warning is-small"
-                  phx-click="restart"
-                  phx-value-name={service}
-                >
+                <span class="tag is-success">Running</span>
+              <% else %>
+                <span class="tag is-danger">Stopped</span>
+              <% end %>
+            <% end %>
+          </.panel_block>
+        <% end %>
+      <% else %>
+        <.panel_block
+          icon="hero-arrow-left"
+          phx-click="select"
+          phx-value-name={@selected_name}
+          class="has-background-gray-light text-lg"
+        >
+          Service: <%= @selected_name %>
+        </.panel_block>
+
+        <.panel_block
+          icon={if @selected_service.running, do: "hero-check-circle", else: "hero-minus-circle"}
+          class="text-lg"
+        >
+          <div>
+            <span class="">
+              <%= if @selected_service.running do %>
+                <button class="button is-warning" phx-click="restart" phx-value-name={@selected_name}>
                   Restart
                 </button>
-                <button class="button is-danger is-small" phx-click="stop" phx-value-name={service}>
+                <button class="button is-danger" phx-click="stop" phx-value-name={@selected_name}>
                   Stop
                 </button>
               <% else %>
-                <button class="button is-success is-small" phx-click="start" phx-value-name={service}>
+                <button class="button is-success" phx-click="start" phx-value-name={@selected_name}>
                   Start
                 </button>
               <% end %>
@@ -67,46 +110,91 @@ defmodule FreediveWeb.SystemServicesLive do
               <%= if @selected_service.commands != [] do %>
                 <%= for command <- @selected_service.commands do %>
                   <button
-                    class="button is-info is-small"
+                    class="button is-info"
                     phx-click="command"
-                    phx-value-name={service}
+                    phx-value-name={@selected_name}
                     phx-value-command={command}
                   >
                     <%= command %>
                   </button>
                 <% end %>
               <% end %>
-
-              <%= if @selected_log != nil and @selected_log != [] do %>
-                <ul class="mt-4">
-                  <%= for {status, log} <- @selected_log do %>
-                    <%= for line <- log do %>
-                      <%= if status == :error do %>
-                        <li>
-                          <span class="has-text-danger">◾</span>
-                          <%= line %>
-                        </li>
-                      <% else %>
-                        <li>
-                          <span class="has-text-success">⚪</span>
-                          <%= line %>
-                        </li>
-                      <% end %>
-                    <% end %>
-                  <% end %>
-                </ul>
-              <% end %>
             </span>
-          <% end %>
+          </div>
         </.panel_block>
+
+        <%= if @selected_log != nil and @selected_log != [] do %>
+          <.panel_block icon="hero-newspaper" class="text-lg">
+            <ul>
+              <%= for {status, log} <- @selected_log do %>
+                <%= for line <- log do %>
+                  <%= if status == :error do %>
+                    <li>
+                      <span class="has-text-danger">❌</span>
+                      <%= line %>
+                    </li>
+                  <% else %>
+                    <li>
+                      <span class="has-text-success">✅</span>
+                      <%= line %>
+                    </li>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </ul>
+          </.panel_block>
+        <% end %>
       <% end %>
-    </.panel>
+    </nav>
     """
   end
 
   def handle_event("search", %{"value" => query}, socket) do
     Logger.debug("Searching for: #{query}")
-    {:noreply, assign(socket, query: query)}
+    filtered_services = filter(socket.assigns.services, query)
+
+    if length(filtered_services) == 1 do
+      {:noreply,
+       assign(socket,
+         query: query,
+         filtered_services: filtered_services,
+         selected_name: hd(filtered_services),
+         selected_service: Service.service(hd(filtered_services)),
+         selected_log: [],
+         filtered_count: length(filtered_services),
+         show_details: true
+       )}
+    else
+      {:noreply,
+       assign(socket,
+         query: query,
+         filtered_services: filtered_services,
+         selected_name: nil,
+         selected_service: nil,
+         selected_log: nil,
+         filtered_count: length(filtered_services),
+         show_details: false
+       )}
+    end
+  end
+
+  def handle_event("select", %{"name" => service_name}, socket) do
+    Logger.debug("Selected service: #{service_name}")
+
+    if socket.assigns.selected_name == service_name do
+      if socket.assigns.show_details do
+        {:noreply, assign(socket, show_details: false)}
+      else
+        {:noreply, assign(socket, show_details: true)}
+      end
+    else
+      {:noreply,
+       assign(socket,
+         selected_name: service_name,
+         selected_service: Service.service(service_name),
+         selected_log: []
+       )}
+    end
   end
 
   def handle_event("start", %{"name" => service_name}, socket) do
@@ -189,21 +277,6 @@ defmodule FreediveWeb.SystemServicesLive do
         Logger.error("Service #{service_name} #{command} error: #{stderr}")
         selected_log = [{:error, stderr} | socket.assigns.selected_log]
         {:noreply, assign(socket, selected_log: selected_log)}
-    end
-  end
-
-  def handle_event("select", %{"name" => service_name}, socket) do
-    Logger.debug("Selected service: #{service_name}")
-
-    if socket.assigns.selected_name == service_name do
-      {:noreply, assign(socket, selected_name: nil, selected_service: nil, selected_log: nil)}
-    else
-      {:noreply,
-       assign(socket,
-         selected_name: service_name,
-         selected_service: Service.service(service_name),
-         selected_log: []
-       )}
     end
   end
 
