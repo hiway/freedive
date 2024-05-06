@@ -22,29 +22,18 @@ defmodule Freedive.Api.Service.Server do
   def init(opts) do
     state = %{opts: opts, services: []}
     Logger.info("Starting Service.Server with opts: #{inspect(opts)}")
-    Process.send_after(self(), :continue, 100)
-    {:ok, state}
+    {:ok, state, {:continue, opts}}
   end
 
   @impl true
-  def handle_call({:list}, _from, state) do
-    services = state[:services]
-    {:reply, services, state}
-  end
-
-  @impl true
-  def handle_info(:continue, state) do
-    services =
-      case list_services() do
-        {:ok, services} -> services
-        {:error, stderr} -> raise "Error listing services: #{stderr}"
-      end
-
-    Service.subscribe()
+  def handle_continue(_opts, state) do
+    {:ok, services} = list_services()
     state = %{state | services: services}
+    Service.subscribe()
     {:noreply, state}
   end
 
+  @impl true
   def handle_info({@topic <> ":" <> event, {:error, log}}, state) do
     Logger.error("Service.Server event: #{event}, log: #{inspect(log)}")
 
@@ -52,11 +41,13 @@ defmodule Freedive.Api.Service.Server do
       state[:services]
       |> Enum.find(&(&1[:name] == event))
 
+    service = if service, do: service, else: %{name: log.name, running: false, enabled: false}
+
     case event do
       "stopped" ->
         service = %{service | running: false}
         state = %{state | services: state[:services] ++ [service]}
-        {:ok, state}
+        {:noreply, state}
 
       _ ->
         {:noreply, state}
@@ -70,6 +61,8 @@ defmodule Freedive.Api.Service.Server do
       state[:services]
       |> Enum.find(&(&1[:name] == event))
 
+    service = if service, do: service, else: %{name: payload.name, running: false, enabled: false}
+
     case event do
       "running" ->
         service = %{service | running: true}
@@ -81,5 +74,11 @@ defmodule Freedive.Api.Service.Server do
     end
 
     {:noreply, state}
+  end
+
+  @impl true
+  def handle_call({:list}, _from, state) do
+    services = state[:services]
+    {:reply, {:ok, services}, state}
   end
 end

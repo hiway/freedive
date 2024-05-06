@@ -2,19 +2,22 @@ defmodule FreediveWeb.SystemServicesLive do
   use FreediveWeb, :live_view
   require Logger
   alias Freedive.Api.Service
+  @filter_none "all"
+  @filter_default "running"
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Service.subscribe()
     end
 
-    services = Service.list()
+    {:ok, services} = Service.list()
+    filtered_services = filter(services, nil, @filter_default)
 
     socket =
       socket
       |> assign(query: nil)
-      |> assign(filter: "running")
-      |> assign(filtered_services: services)
+      |> assign(filter: @filter_default)
+      |> assign(filtered_services: filtered_services)
       |> assign(filtered_count: nil)
       |> assign(selected: nil)
       |> assign(selected_log: nil)
@@ -32,7 +35,7 @@ defmodule FreediveWeb.SystemServicesLive do
       </p>
 
       <div class="panel-block">
-        <p class="control has-icons-left">
+        <p class="control has-icons-left has-icons-right">
           <input
             id="search"
             class="input"
@@ -46,6 +49,9 @@ defmodule FreediveWeb.SystemServicesLive do
           <span class="icon is-left">
             <.icon name="hero-magnifying-glass" />
           </span>
+          <button class="icon is-right">
+            <.icon name="hero-backspace" phx-click="search-reset" />
+          </button>
         </p>
       </div>
 
@@ -173,19 +179,7 @@ defmodule FreediveWeb.SystemServicesLive do
   def handle_event("filter", %{"name" => filter}, socket) do
     Logger.debug("Filtering services: #{filter}")
 
-    searched_services = filter(socket.assigns.services, socket.assigns.query)
-
-    filtered_services =
-      case filter do
-        "all" ->
-          searched_services
-
-        "running" ->
-          Enum.filter(searched_services, & &1.running)
-
-        "enabled" ->
-          Enum.filter(searched_services, & &1.enabled)
-      end
+    filtered_services = filter(socket.assigns.services, socket.assigns.query, filter)
 
     {:noreply,
      assign(socket,
@@ -200,13 +194,13 @@ defmodule FreediveWeb.SystemServicesLive do
 
   def handle_event("search", %{"value" => query}, socket) do
     Logger.debug("Searching for: #{query}")
-    filtered_services = filter(socket.assigns.services, query)
+    filtered_services = filter(socket.assigns.services, query, @filter_none)
 
     if length(filtered_services) == 1 do
       {:noreply,
        assign(socket,
          query: query,
-         filter: "all",
+         filter: @filter_none,
          filtered_services: filtered_services,
          filtered_count: length(filtered_services),
          selected: Service.service(hd(filtered_services).name),
@@ -217,7 +211,7 @@ defmodule FreediveWeb.SystemServicesLive do
       {:noreply,
        assign(socket,
          query: query,
-         filter: "all",
+         filter: @filter_none,
          filtered_services: filtered_services,
          filtered_count: length(filtered_services),
          selected: nil,
@@ -348,7 +342,7 @@ defmodule FreediveWeb.SystemServicesLive do
         {:noreply,
          assign(socket,
            services: services,
-           filtered_services: filter(services, socket.assigns.query)
+           filtered_services: filter(services, socket.assigns.query, socket.assigns.filter)
          )}
 
       _ ->
@@ -376,7 +370,7 @@ defmodule FreediveWeb.SystemServicesLive do
         {:noreply,
          assign(socket,
            services: services,
-           filtered_services: filter(services, socket.assigns.query)
+           filtered_services: filter(services, socket.assigns.query, socket.assigns.filter)
          )}
 
       _ ->
@@ -384,11 +378,23 @@ defmodule FreediveWeb.SystemServicesLive do
     end
   end
 
-  defp filter(services, query) do
-    case query do
-      nil -> services
-      "" -> services
-      _ -> Enum.filter(services, &String.contains?(&1.name, query))
+  defp filter(services, query, filter) do
+    searched_services =
+      case query do
+        nil -> services
+        "" -> services
+        _ -> Enum.filter(services, &String.contains?(&1.name, query))
+      end
+
+    case filter do
+      "all" ->
+        searched_services
+
+      "running" ->
+        Enum.filter(searched_services, & &1.running)
+
+      "enabled" ->
+        Enum.filter(searched_services, & &1.enabled)
     end
   end
 end

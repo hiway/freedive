@@ -4,6 +4,7 @@ defmodule Freedive.Api.ServiceTest do
 
   test "command line wrapper" do
 
+    # services = Service.list()
     {:ok, services} = Service.list()
     assert length(services) > 10
 
