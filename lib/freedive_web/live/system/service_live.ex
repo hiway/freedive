@@ -42,6 +42,7 @@ defmodule FreediveWeb.SystemServicesLive do
             type="text"
             placeholder="Search"
             value={@query}
+            phx-hook="Search"
             phx-keyup="search"
             phx-debounce="300"
             autofocus="true"
@@ -49,9 +50,9 @@ defmodule FreediveWeb.SystemServicesLive do
           <span class="icon is-left">
             <.icon name="hero-magnifying-glass" />
           </span>
-          <button class="icon is-right">
+          <span class="icon is-right">
             <.icon name="hero-backspace" phx-click="search-reset" />
-          </button>
+          </span>
         </p>
       </div>
 

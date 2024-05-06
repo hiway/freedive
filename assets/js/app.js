@@ -22,10 +22,42 @@ import { Socket } from "phoenix"
 import { LiveSocket } from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+let Hooks = {}
+Hooks.Search = {
+  mounted() {
+    console.log('Search mounted')
+
+    window.addEventListener('keyup', (e) => {
+      if (e.ctrlKey && e.code === 'Slash') {
+        this.el.focus();
+      }
+    })
+
+    // Clear on escape
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.el.value = ''
+        this.pushEvent('search', { value: '' })
+      }
+    })
+
+    // Push client-side cached search query
+    let query = this.el.value || ''
+    query = query.trim()
+    if (query.length > 0) {
+      this.pushEvent('search', { value: query })
+      console.log('Search pushed', query)
+    } else {
+      console.log('Search cleared')
+    }
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: { _csrf_token: csrfToken }
+  params: { _csrf_token: csrfToken },
+  hooks: Hooks
 })
 
 // Show progress bar on live navigation and form submits
@@ -64,9 +96,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-const searchField = document.querySelector('#search');
-window.addEventListener('keyup', (e) => {
-  if (e.ctrlKey && e.code === 'Slash') {
-    searchField.focus();
-  }
-})
