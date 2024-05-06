@@ -11,11 +11,11 @@ defmodule Freedive.Api.Service.Supervisor do
       Supervisor.child_spec({Freedive.Api.Service.CommandMonitor, opts},
         id: Freedive.Api.Service.CommandMonitor
       ),
-      Supervisor.child_spec({Freedive.Api.Service.ServiceMonitor, opts},
-        id: Freedive.Api.Service.ServiceMonitor
-      ),
       Supervisor.child_spec({Freedive.Api.Service.FilesystemMonitor, opts},
         id: Freedive.Api.Service.FilesystemMonitor
+      ),
+      Supervisor.child_spec({Freedive.Api.Service.Server, opts},
+        id: Freedive.Api.Service.Server
       )
     ]
 

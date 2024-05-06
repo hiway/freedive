@@ -8,7 +8,7 @@ defmodule FreediveWeb.SystemServicesLive do
       Service.subscribe()
     end
 
-    {:ok, services} = Service.list()
+    services = Service.list()
 
     socket =
       socket

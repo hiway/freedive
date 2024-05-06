@@ -2,6 +2,7 @@ defmodule Freedive.Api.Service do
   @moduledoc """
   Monitor and manage services running on host.
   """
+  alias Freedive.Api.Service.Server
   import Freedive.Api.Service.Cli
   @topic "host:service"
 
@@ -18,10 +19,7 @@ defmodule Freedive.Api.Service do
   end
 
   def list() do
-    case list_services() do
-      {:ok, services} -> {:ok, services}
-      {:error, stderr} -> {:error, stderr}
-    end
+    Server.list()
   end
 
   def service(name) do
