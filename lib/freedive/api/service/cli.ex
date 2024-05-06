@@ -4,6 +4,7 @@ defmodule Freedive.Api.Service.Cli do
   """
   require Logger
   import Freedive
+  alias Freedive.Api.Service
 
   @service_bin "/usr/sbin/service"
   @topic "host:service"
@@ -67,12 +68,12 @@ defmodule Freedive.Api.Service.Cli do
     case service(name, "onestart", args) do
       {:ok, stdout} ->
         Logger.debug("start_service, log: #{inspect(stdout)}")
-        broadcast("start", {:ok, %{name: name, args: args, log: stdout}})
+        Service.broadcast("start", {:ok, %{name: name, args: args, log: stdout}})
         {:ok, stdout}
 
       {:error, {stderr, _code}} ->
         Logger.error("start_service, log: #{inspect(stderr)}")
-        broadcast("start", {:error, %{name: name, args: args, log: stderr}})
+        Service.broadcast("start", {:error, %{name: name, args: args, log: stderr}})
         {:error, stderr}
     end
   end
@@ -81,12 +82,12 @@ defmodule Freedive.Api.Service.Cli do
     case service(name, "onestop", args) do
       {:ok, stdout} ->
         Logger.debug("stop_service, log: #{inspect(stdout)}")
-        broadcast("stop", {:ok, %{name: name, args: args, log: stdout}})
+        Service.broadcast("stop", {:ok, %{name: name, args: args, log: stdout}})
         {:ok, stdout}
 
       {:error, {stderr, _code}} ->
         Logger.error("stop_service, log: #{inspect(stderr)}")
-        broadcast("stop", {:error, %{name: name, args: args, log: stderr}})
+        Service.broadcast("stop", {:error, %{name: name, args: args, log: stderr}})
         {:error, stderr}
     end
   end
@@ -104,12 +105,12 @@ defmodule Freedive.Api.Service.Cli do
           end
 
         Logger.debug("run_service_command, log: #{inspect(stdout)}")
-        broadcast("command", {:ok, %{name: name, command: command, args: args, log: stdout}})
+        Service.broadcast("command", {:ok, %{name: name, command: command, args: args, log: stdout}})
         {:ok, stdout}
 
       {:error, {stderr, _code}} ->
         Logger.error("run_service_command, log: #{inspect(stderr)}")
-        broadcast("command", {:error, %{name: name, command: command, args: args, log: stderr}})
+        Service.broadcast("command", {:error, %{name: name, command: command, args: args, log: stderr}})
         {:error, stderr}
     end
   end
@@ -134,12 +135,12 @@ defmodule Freedive.Api.Service.Cli do
     case service(name, "onestatus", args) do
       {:ok, stdout} ->
         Logger.debug("service_is_running, stdout: #{inspect(stdout)}")
-        broadcast("running", {:ok, %{name: name, args: args, log: stdout}})
+        Service.broadcast("running", {:ok, %{name: name, args: args, log: stdout}})
         true
 
       {:error, {stderr, _code}} ->
         Logger.debug("service_is_running, stderr: #{inspect(stderr)}")
-        broadcast("stopped", {:error, %{name: name, args: args, log: stderr}})
+        Service.broadcast("stopped", {:error, %{name: name, args: args, log: stderr}})
         false
     end
   end
@@ -149,9 +150,5 @@ defmodule Freedive.Api.Service.Cli do
       {:ok, stdout} -> {:ok, stdout}
       {:error, {stderr, code}} -> {:error, {stderr, code}}
     end
-  end
-
-  defp broadcast(event, payload) do
-    Phoenix.PubSub.broadcast(Freedive.PubSub, @topic, {@topic <> ":" <> event, payload})
   end
 end

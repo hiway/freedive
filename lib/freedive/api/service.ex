@@ -18,6 +18,10 @@ defmodule Freedive.Api.Service do
     Phoenix.PubSub.unsubscribe(Freedive.PubSub, @topic)
   end
 
+  def broadcast(event, payload) do
+    Phoenix.PubSub.broadcast(Freedive.PubSub, @topic, {@topic <> ":" <> event, payload})
+  end
+
   def list() do
     Server.list()
   end

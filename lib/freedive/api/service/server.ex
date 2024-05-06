@@ -5,6 +5,7 @@ defmodule Freedive.Api.Service.Server do
   """
   use GenServer
   require Logger
+  alias Freedive.Api.Service
   import Freedive.Api.Service.Cli
 
   @topic "host:service"
@@ -39,7 +40,46 @@ defmodule Freedive.Api.Service.Server do
         {:error, stderr} -> raise "Error listing services: #{stderr}"
       end
 
+    Service.subscribe()
     state = %{state | services: services}
+    {:noreply, state}
+  end
+
+  def handle_info({@topic <> ":" <> event, {:error, log}}, state) do
+    Logger.error("Service.Server event: #{event}, log: #{inspect(log)}")
+
+    service =
+      state[:services]
+      |> Enum.find(&(&1[:name] == event))
+
+    case event do
+      "stopped" ->
+        service = %{service | running: false}
+        state = %{state | services: state[:services] ++ [service]}
+        {:ok, state}
+
+      _ ->
+        {:noreply, state}
+    end
+  end
+
+  def handle_info({@topic <> ":" <> event, {:ok, payload}}, state) do
+    Logger.warning("Service.Server event: #{event}, payload: #{inspect(payload)}")
+
+    service =
+      state[:services]
+      |> Enum.find(&(&1[:name] == event))
+
+    case event do
+      "running" ->
+        service = %{service | running: true}
+        state = %{state | services: state[:services] ++ [service]}
+        {:ok, state}
+
+      _ ->
+        {:noreply, state}
+    end
+
     {:noreply, state}
   end
 end

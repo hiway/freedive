@@ -329,7 +329,7 @@ defmodule FreediveWeb.SystemServicesLive do
   end
 
   def handle_info({"host:service:" <> event, {:error, log}}, socket) do
-    Logger.error("Received service event: #{inspect(event)} with log: #{inspect(log)}")
+    # Logger.error("Received service event: #{inspect(event)} with log: #{inspect(log)}")
     service_name = Map.get(log, :name)
     services = socket.assigns.services
 
@@ -357,7 +357,7 @@ defmodule FreediveWeb.SystemServicesLive do
   end
 
   def handle_info({"host:service:" <> event, {:ok, payload}}, socket) do
-    Logger.debug("Received service event: #{inspect(event)} with payload: #{inspect(payload)}")
+    # Logger.debug("Received service event: #{inspect(event)} with payload: #{inspect(payload)}")
     service_name = Map.get(payload, :name)
     services = socket.assigns.services
 
