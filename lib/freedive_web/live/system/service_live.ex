@@ -26,7 +26,7 @@ defmodule FreediveWeb.SystemServicesLive do
 
   def render(assigns) do
     ~H"""
-    <nav class="panel" class={if @selected != nil, do: "hidden"}>
+    <nav class="panel">
       <p class="panel-heading">
         System Services
       </p>
@@ -76,8 +76,8 @@ defmodule FreediveWeb.SystemServicesLive do
             phx-click="select"
             phx-value-name={service.name}
             class={
-              if @selected && Map.get(@selected, "name") == service.name,
-                do: "has-background-gray-light"
+              if @selected != nil && Map.get(@selected, :name) == service.name,
+                do: "has-background-info-light "
             }
           >
             <span class="mr-4 text-lg">
