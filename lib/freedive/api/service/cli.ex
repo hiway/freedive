@@ -45,7 +45,16 @@ defmodule Freedive.Api.Service.Cli do
                     else
                       nil
                     end,
-                  description: "",
+                  description:
+                    if true do
+                      # if Map.has_key?(enabled_service_names, name) do
+                      case service_description(name) do
+                        {:ok, desc} -> desc
+                        _ -> nil
+                      end
+                    else
+                      nil
+                    end,
                   commands: [],
                   rcvars: []
                 }
@@ -105,12 +114,22 @@ defmodule Freedive.Api.Service.Cli do
           end
 
         Logger.debug("run_service_command, log: #{inspect(stdout)}")
-        Service.broadcast("command", {:ok, %{name: name, command: command, args: args, log: stdout}})
+
+        Service.broadcast(
+          "command",
+          {:ok, %{name: name, command: command, args: args, log: stdout}}
+        )
+
         {:ok, stdout}
 
       {:error, {stderr, _code}} ->
         Logger.error("run_service_command, log: #{inspect(stderr)}")
-        Service.broadcast("command", {:error, %{name: name, command: command, args: args, log: stderr}})
+
+        Service.broadcast(
+          "command",
+          {:error, %{name: name, command: command, args: args, log: stderr}}
+        )
+
         {:error, stderr}
     end
   end
@@ -142,6 +161,21 @@ defmodule Freedive.Api.Service.Cli do
         Logger.debug("service_is_running, stderr: #{inspect(stderr)}")
         Service.broadcast("stopped", {:error, %{name: name, args: args, log: stderr}})
         false
+    end
+  end
+
+  def service_description(name, args \\ []) do
+    case service(name, "onedescribe", args) do
+      {:ok, stdout} ->
+        Logger.debug("service_description, stdout: #{inspect(stdout)}")
+        stdout = String.trim(stdout)
+        Service.broadcast("description", {:ok, %{name: name, args: args, log: stdout}})
+        {:ok, stdout}
+
+      {:error, {stderr, _code}} ->
+        Logger.debug("service_description, stderr: #{inspect(stderr)}")
+        Service.broadcast("description", {:error, %{name: name, args: args, log: stderr}})
+        {:error, stderr}
     end
   end
 

@@ -35,7 +35,7 @@ defmodule FreediveWeb.SystemServicesLive do
       </p>
 
       <div class="panel-block">
-        <p class="control has-icons-left has-icons-right">
+        <p class="control has-icons-left">
           <input
             id="search"
             class="input"
@@ -49,9 +49,6 @@ defmodule FreediveWeb.SystemServicesLive do
           />
           <span class="icon is-left">
             <.icon name="hero-magnifying-glass" />
-          </span>
-          <span class="icon is-right">
-            <.icon name="hero-backspace" phx-click="search-reset" />
           </span>
         </p>
       </div>
@@ -101,6 +98,12 @@ defmodule FreediveWeb.SystemServicesLive do
               <span class="tag is-success">Enabled</span>
             <% else %>
               <span class="tag is-gray">Disabled</span>
+            <% end %>
+
+            <%= if service.description != nil do %>
+              <span class="text-gray-400 ml-4">
+                <%= service.description |> String.capitalize() %>
+              </span>
             <% end %>
           </.panel_block>
         <% end %>

@@ -41,7 +41,10 @@ defmodule Freedive.Api.Service.Server do
       state[:services]
       |> Enum.find(&(&1[:name] == event))
 
-    service = if service, do: service, else: %{name: log.name, running: false, enabled: false}
+    service =
+      if service,
+        do: service,
+        else: %{name: log.name, running: false, enabled: false, description: nil}
 
     case event do
       "stopped" ->
@@ -61,7 +64,10 @@ defmodule Freedive.Api.Service.Server do
       state[:services]
       |> Enum.find(&(&1[:name] == event))
 
-    service = if service, do: service, else: %{name: payload.name, running: false, enabled: false}
+    service =
+      if service,
+        do: service,
+        else: %{name: payload.name, running: false, enabled: false, description: nil}
 
     case event do
       "running" ->
